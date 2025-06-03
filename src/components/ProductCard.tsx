@@ -1,22 +1,23 @@
 import Image from 'next/image';
-import {Product, urlFor} from '@/lib/client';
+import {urlFor} from '@/lib/client';
+import { Product } from '@/src/types/product';
 
 type ProductCardProps = {
-  item: Product;
+  product: Product;
 };
 
-export default function ProductCard({ item }: ProductCardProps) {
+export default function ProductCard({ product}: ProductCardProps) {
   return (
     <div className="border rounded p-4 shadow-sm">
       <Image
-      src={urlFor(item.imageUrl).url()}
-      alt={item.name}
+      src={urlFor(product.image).url()}
+      alt={product.name}
       width={300}
       height={300}
       />
-      <h3 className="mt-2 font-semibold text-lg">{item.name}</h3>
-      <p className="text-sm text-gray-600">{item.description}</p>
-      <p className="mt-1 font-bold">{item.price}</p>
+      <h3 className="mt-2 font-semibold text-lg">{product.name}</h3>
+      <p className="text-sm text-gray-600">{product.description}</p>
+      <p className="mt-1 font-bold">{product.price}</p>
     </div>
   );
 }
