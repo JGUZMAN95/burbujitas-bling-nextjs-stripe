@@ -1,13 +1,9 @@
-import { GetStaticProps } from 'next';
-import { getProducts } from '@/lib/queries';
+import { getProducts } from '@/lib/sanity/queries';
 import { Product } from '@/src/types/product';
 import ProductCard from '@/src/components/ProductCard';
+import { sanityClient } from '@/lib/sanity/client';
 
-type HomeProps = {
-  products: Product[];
-};
-
-export default function Home({ products }: HomeProps) {
+export default function Home({ products = [] }: { products: Product[] }) {
   return (
     <div className="min-h-screen bg-babyPink p-6">
       <header className="text-center mb-10">
@@ -16,22 +12,22 @@ export default function Home({ products }: HomeProps) {
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products.map((products) => (
-          <ProductCard key={products._id} product={products} />
-        ))}
+         {products.map((product) => (
+        <ProductCard key={product._id} product={product} />
+      ))}
       </div>
     </div>
   );
 }
 
 // Static generation using Sanity
-export const getStaticProps: GetStaticProps = async () => {
-  const products = await getProducts();
+export async function getStaticProps() {
+  const products = await sanityClient.fetch(getProducts); // or whatever your query is
 
   return {
     props: {
       products,
     },
-    revalidate: 60, // optional: ISR every 60 seconds
+    revalidate: 60, // optional ISR
   };
 };

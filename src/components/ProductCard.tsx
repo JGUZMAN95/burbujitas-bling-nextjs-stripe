@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {urlFor} from '@/lib/client';
+import {urlFor} from '@/lib/sanity/client';
 import { Product } from '@/src/types/product';
 
 type ProductCardProps = {

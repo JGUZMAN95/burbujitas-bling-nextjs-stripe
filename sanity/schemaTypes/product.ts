@@ -1,45 +1,18 @@
-import {defineField, defineType} from 'sanity'
+import {defineType} from 'sanity'
 
+// sanity/schemas/product.ts
 export const product = defineType({
   name: 'product',
-  title: 'Product',
   type: 'document',
+  title: 'Product',
   fields: [
-    defineField({
-      name: 'name',
-      title:'Product Name',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'type',
-      title:'Product Type',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'price',
-      title:'Price',
-      type: 'string',
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'text',
-    }),
-    defineField({
-      name: 'quantity',
-      title: 'Quantity',
-      type: 'string',
-    }),
-    defineField({
-      name: 'image',
-      title:'Product Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      }
-    }),
+    { name: 'name', type: 'string', validation: (rule) => rule.required(), },
+    { name: 'slug', type: 'slug', options: { source: 'name' } },
+    { name: 'description', type: 'text' },
+    { name: 'price', type: 'number', validation: (rule) => rule.required() },
+    { name: 'image', type: 'image',
+      options: { hotspot: true} },
+    { name: 'type',  type: 'string'},
+    { name: 'quantity',  type: 'number'}
   ],
 })
