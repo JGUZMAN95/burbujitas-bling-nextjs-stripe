@@ -22,13 +22,12 @@ export default async function ProductPage({ params }: Props) {
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4">
+    <div>
       <Image
         src={urlFor(product.image).url()}
         alt={product.name}
         width={500}
         height={500}
-        className="object-cover w-full h-auto"
       />
       <h1 className="text-2xl font-bold mt-4">{product.name}</h1>
       <p className="text-lg mt-2">{product.description}</p>

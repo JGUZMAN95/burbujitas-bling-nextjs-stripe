@@ -19,9 +19,9 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-softPink font-accent text-softBrown text-xs flex flex-col items-center justify-center px-9">
+    <header className="bg-softPink font-accent text-softBrown text-md flex flex-col items-center justify-center w-screen px-20">
       {/* Logo */}
-      <Link href="/" className="-mt-8">
+      <Link href="/">
         <Image
           src="/images/logo3.png"
           alt="Burbujitas & Bling"
@@ -32,8 +32,11 @@ export default function Header() {
 
       {/* Nav */}
       <nav className="w-full flex items-center justify-between -mt-9">
+
         <div className="flex-1 flex justify-center space-x-5">
+
             {navLinks.map((link) => (
+
           <Link
             key={link.path}
             href={link.path}
@@ -42,22 +45,25 @@ export default function Header() {
                 ? "text-green border-b-2 border-green"
                 : "hover:bg-gradient-to-r hover:from-softCoral hover:to-green hover:text-transparent hover:bg-clip-text hover:border-b-2 hover:border-green"
               }`}
-          >
-            {link.name}
-          </Link>
+            >
+
+              {link.name}
+
+            </Link>
         ))}
         </div>
-        <div className="items-center transition-transform duration-800 hover:-translate-y-1 hover:scale-100 p-4">
-        {/* Shopping Bag */}
-      <Link
-        href="/cart">
-        <Image
-          src="/images/shoppingBag.png"
-          alt="Cart"
-          width={30}
-          height={30}
-        />
-      </Link>
+
+        <div className="items-center transition-transform duration-800 hover:-translate-y-1 hover:scale-100">
+          {/* Shopping Bag */}
+          <Link
+            href="/cart">
+              <Image
+                src="/images/shoppingBag.png"
+                alt="Cart"
+                width={30}
+                height={30}
+              />
+          </Link>
     </div>
     </nav>
     </header>

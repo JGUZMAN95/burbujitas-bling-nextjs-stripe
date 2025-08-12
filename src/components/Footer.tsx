@@ -1,9 +1,22 @@
+"use client"
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from "next/navigation";
 
 export default function Footer(){
+    const pathname = usePathname();
+
+    const navLinks = [
+        { name: "Care Tips", path: "/care-tips" },
+        { name: "About Us", path: "/about-us" },
+        { name: "Policies", path: "/policies" },
+        { name: "Contact Us ", path: "/contact-us" },
+    ];
+
+    
     return(
-        <footer className='bg-softWhite text-softBlue font-accent text-xs flex-col items-center flex justify-center p-1 pb-5'>
+        <footer className='bg-softWhite text-softBlue font-accent text-sm flex-col items-center flex'>
                
                 <Image
                 src="/images/logo2.png"
@@ -11,7 +24,7 @@ export default function Footer(){
                 width={150}
                 height={0}/>
                 
-                <div className='flex space-x-6 p-1 pb-3'>
+                <div className='flex space-x-6 p-1 pb-3 '>
                     <Link href="https://linktr.ee/burbujitasYbling">
                         <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20"  viewBox="0 0 417 512.238">
                             <path fill="currentColor" d="M171.274 344.942h74.09v167.296h-74.09V344.942zM0 173.468h126.068l-89.622-85.44 49.591-50.985 85.439 87.829V0h74.086v124.872L331 37.243l49.552 50.785-89.58 85.24H417v70.502H290.252l90.183 87.629L331 381.192 208.519 258.11 86.037 381.192l-49.591-49.591 90.218-87.631H0v-70.502z"/>
@@ -30,11 +43,21 @@ export default function Footer(){
                     </Link>
                 </div> 
 
-                <div className='flex space-x-8 p-1'>
-                <Link href="/contact-us"> Contact Us </Link>
-                <Link href="/care-tips"> Care Tips </Link>
-                <Link href="/about-us"> About Us </Link>
-                <Link href="/policies"> Policy </Link>
+                <div className='flex space-x-8 p-1 transition-transform'>
+
+                            {navLinks.map((link) => (
+          <Link
+            key={link.path}
+            href={link.path}
+            className={`relative pb-1 transition-all duration-300
+              ${pathname === link.path
+                ? "border-b-2"
+                : "hover:border-b-2 hover:border-softBlue"
+              }`}
+          >
+            {link.name}
+          </Link>
+        ))}
                 </div>
         </footer>
     );

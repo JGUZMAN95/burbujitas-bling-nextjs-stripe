@@ -19,9 +19,9 @@ module.exports = {
         green:"#a6ba5c"
       },
       fontSize: {
-        xs: "1rem", // 16px
-        sm: "1.5rem", // 24px
-        base: "1.5rem",   // 16px
+        sm: "1rem", // 16px
+        md: "1.25rem", // 24px
+        base: "1.75rem",   // 30px
         lg: "2.25rem", // 36px
         xl: "3rem",  // 48px
       },
