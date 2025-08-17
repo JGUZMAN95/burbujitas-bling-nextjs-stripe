@@ -10,4 +10,9 @@ export type Product = {
   description: string;
   price: number;
   image: SanityImageSource;      // Used with urlFor()
+<<<<<<< HEAD
+=======
+  color: string;
+  productType: "rings" | "bracelets" | "anklets" | "necklaces" | "beauty" | "handchains" | "stickers|"; // optional stricter type
+>>>>>>> 9bc74c3 (Remove large video file from repo)
 };

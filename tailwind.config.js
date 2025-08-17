@@ -19,19 +19,20 @@ module.exports = {
         green:"#a6ba5c"
       },
       fontSize: {
-        sm: "1rem", // 16px
-        md: "1.25rem", // 24px
-        base: "1.75rem",   // 30px
-        lg: "2.25rem", // 36px
-        xl: "3rem",  // 48px
+        xs: "12px",
+        sm: "14px",
+        md: "16px",
+        base: "28px",
+        lg: "36px",
+        xl: "48px",
       },
       fontFamily: {
-        heading: ['Inter', 'sans-serif'],
+        heading: ['Poppins', 'sans-serif'],
         body: ['Averia Serif Libre', 'serif'],
         accent: ['MyFont', 'sans-serif'],
         caption: ['Playfair Display', 'serif'],
       },
     },
   },
-  plugins: [],
+  plugins: [require('tailwind-hamburgers')],
 };

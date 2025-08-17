@@ -5,5 +5,7 @@ export const getProducts =
       price,
       description,
       "image": image.asset->url,
-      slug
+      slug,
+      productType,
+      color,
     }`;

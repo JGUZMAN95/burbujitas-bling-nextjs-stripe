@@ -1,6 +1,10 @@
 import '../styles/globals.css'
 import Header from '../components/Header'
 import Footer from '../components/Footer';
+<<<<<<< HEAD
+=======
+import { CartProvider } from "@/src/context/CartContext";
+>>>>>>> 9bc74c3 (Remove large video file from repo)
 
 export const metadata = {
   title: 'Burbujitas & Bling',
@@ -11,8 +15,15 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
   return (
     <html lang="en" className='bg-softPink'>
       <body>
+<<<<<<< HEAD
         <Header/>
         <main>{children}</main>
+=======
+        <CartProvider>
+        <Header/>
+        <main>{children}</main>
+        </CartProvider>
+>>>>>>> 9bc74c3 (Remove large video file from repo)
         <Footer/>
       </body>
     </html>

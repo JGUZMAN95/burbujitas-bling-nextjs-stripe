@@ -37,3 +37,6 @@ next-env.d.ts
 
 # sanity
 .env.local
+
+# video
+public/videos/OwnerCrafting.mp4
