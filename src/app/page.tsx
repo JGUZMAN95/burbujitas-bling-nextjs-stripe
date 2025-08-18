@@ -1,23 +1,13 @@
 import { getProducts } from '@/lib/sanity/queries';
 import { Product } from '@/src/types/product';
-<<<<<<< HEAD
-import ProductCard from '@/src/components/ProductCard';
-import { sanityClient } from '@/lib/sanity/client';
-
-=======
 import OverviewProductCard from '@/src/components/OverviewProductCard';
 import { sanityClient } from '@/lib/sanity/client';
->>>>>>> 9bc74c3 (Remove large video file from repo)
 export default async function HomePage() {
   const products: Product[] = await sanityClient.fetch(getProducts);
 
   return (
-<<<<<<< HEAD
-      <div className='grid grid-cols-1 md:grid-cols-2 m-6 md:m-20 gap-8'>
 
-      </div>
-=======
-    <div className='break-normal justify-center p-5 w-screen'>
+    <div className='break-normal justify-center p-5'>
       {/*<video className="my-5 rounded-lg shadow-md" autoPlay muted controls loop disablePictureInPicture disableRemotePlayback controlsList='nodownload nofullscreen noplaybackrate'>
           <source
             src="https://www.canva.com/design/DAGvs0eQvcU/klXhAicf0KoCMV8YUNubRg/watch"
@@ -39,6 +29,5 @@ export default async function HomePage() {
           ))}
       </div>
     </div>
->>>>>>> 9bc74c3 (Remove large video file from repo)
   );
 }

@@ -3,41 +3,81 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import classNames from "classnames";
-import { useCart } from "@/src/context/CartContext";
+
+// Tailwind colors
+const colors = {
+  softWhite: "#FFF8F0",
+  softBrown: "#bb936eff",
+  softCoral: "#E07A5F",
+  softBlue: "#9DBDD9",
+  softPink: "#FADADD",
+  green: "#a6ba5c",
+  softYellow: "#F3D87F",
+};
+
+// Product types
+const productTypes = [
+  "rings",
+  "bracelets",
+  "anklets",
+  "necklaces",
+  "beauty",
+  "stickers",
+  "handchains",
+];
+
+// Get cart from cookies
+const getCart = (): { _id: string; quantity: number }[] => {
+  if (typeof window === "undefined") return [];
+  const cookie = document.cookie.split("; ").find((row) => row.startsWith("cart="));
+  if (!cookie) return [];
+  try {
+    return JSON.parse(decodeURIComponent(cookie.split("=")[1]));
+  } catch {
+    return [];
+  }
+};
 
 export default function Header() {
   const pathname = usePathname();
   const [opened, setOpened] = useState(false);
-  const { cart } = useCart();
-  const staticLinks = [
-    { name: "Home", path: "/" },
+  const [cartQuantity, setCartQuantity] = useState(0);
 
-  ];
-  const productTypes = ["rings", "bracelets", "anklets", "necklaces", "beauty", "stickers", "handchains"];
+  useEffect(() => {
+    const updateCart = () => {
+      const cart = getCart();
+      const total = cart.reduce((acc, item) => acc + item.quantity, 0);
+      setCartQuantity(total);
+    };
+    updateCart();
+    window.addEventListener("cart-updated", updateCart);
+    return () => window.removeEventListener("cart-updated", updateCart);
+  }, []);
 
+  const staticLinks = [{ name: "Home", path: "/" }];
   const typeLinks = productTypes.map((type) => ({
-  name: type.charAt(0).toUpperCase() + type.slice(1),
-  path: `/products/${type}`,
-}));
+    name: type.charAt(0).toUpperCase() + type.slice(1),
+    path: `/products/${type}`,
+  }));
+  const navLinks = [...staticLinks, ...typeLinks];
 
-const navLinks = [...staticLinks, ...typeLinks];
-
+  const showBadge = pathname !== "/cart";
 
   return (
-    <header className="sticky bg-softPink font-accent text-softBrown text-md w-screen shadow-md">
-      <div className=" font-body text-softBrown text-sm place-items-center shadow-sm p-1">
-        <p>Free Shipping on Domestic Orders $30+</p>
+    <header className="sticky top-0 w-screen bg-softPink shadow-md z-50 font-accent text-softBrown">
+
+      {/* Top shipping bar */}
+      <div className="font-body text-softBrown text-sm text-center shadow-sm p-1">
+        Free Shipping on Domestic Orders $30+
       </div>
-      {/* Top row for mobile: hamburger, logo, cart */}
-      <div className="flex items-center justify-between px-4 py-2 md:hidden">
+
+      {/* Mobile row */}
+      <div className="flex items-center justify-between px-4 py-2 md:hidden relative">
         {/* Hamburger */}
         <button
-          className={classNames(
-            "tham tham-e-squeeze tham-w-6",
-            { "tham-active": opened }
-          )}
+          className={classNames("tham tham-e-squeeze tham-w-6", { "tham-active": opened })}
           onClick={() => setOpened(!opened)}
         >
           <div className="tham-box">
@@ -46,92 +86,86 @@ const navLinks = [...staticLinks, ...typeLinks];
         </button>
 
         {/* Logo */}
-        <Link href="/" className="flex justify-center">
-          <div className="w-[150px]">
-            <Image
-              src="/images/logo3.png"
-              alt="Burbujitas & Bling"
-              width={200}
-              height={0}
-              className="w-full h-full"
-            />
-          </div>
+        <Link href="/" className="flex justify-center w-[150px]">
+          <Image
+            src="/images/logo3.png"
+            alt="Burbujitas & Bling"
+            width={150}
+            height={60}
+            className="w-full h-auto"
+          />
         </Link>
 
         {/* Cart */}
-        <Link href="/checkout" className="transition hover:scale-110">
-          <Image
-            src="/images/shoppingBag.png"
-            alt="Cart"
-            width={30}
-            height={30}
-                      />
-
-            {cart.length > 0 && (
-      <span className="absolute -top-2 -right-2 bg-softCoral text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-        {cart.reduce((acc, item) => acc + item.quantity, 0)}
-      </span>
-    )}
-        </Link>
+        {showBadge && (
+          <Link href="/cart" className="relative">
+            <Image src="/images/shoppingBag.png" alt="Cart" width={30} height={30} />
+            {cartQuantity > 0 && (
+              <span className="absolute -top-2 -right-2 bg-softCoral text-softWhite text-xs flex items-center justify-center h-5 w-5 rounded-full shadow-lg">
+                {cartQuantity}
+              </span>
+            )}
+          </Link>
+        )}
       </div>
 
       {/* Desktop logo */}
-      <div className="hidden md:flex justify-center py-4">
-        <div className="w-[300px]">
-          <Link href="/" className="flex justify-center">
-            <Image
-              src="/images/logo3.png"
-              alt="Burbujitas & Bling"
-              width={300}
-              height={0}
-              className="w-full h-auto"
-            />
-          </Link>
+      <div className="hidden md:flex flex-col items-center py-4">
+        <Link href="/" className="flex justify-center w-[300px] mb-2">
+          <Image
+            src="/images/logo3.png"
+            alt="Burbujitas & Bling"
+            width={300}
+            height={90}
+            className="w-full h-auto"
+          />
+        </Link>
 
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav
-        className={classNames(
-          "transition-all duration-300 -mt-10",
-          opened ? "flex flex-col items-center" : "hidden md:flex md:justify-center"
-        )}
-      >
-        <div className="flex md:flex-row flex-col items-center space-y-4 md:space-y-0 md:space-x-5 py-4">
+        {/* Desktop nav */}
+        <nav className="flex items-center space-x-6">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               href={link.path}
-              className={`relative pb-1 transition-all duration-300
-              ${pathname === link.path
+              className={classNames(
+                "pb-1 transition-all duration-300",
+                pathname === link.path
                   ? "text-green border-b-2 border-green"
                   : "hover:bg-gradient-to-r hover:from-softCoral hover:to-green hover:text-transparent hover:bg-clip-text hover:border-b-2 hover:border-green"
-                }`}
+              )}
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          {showBadge && (
+            <Link href="/cart" className="relative">
+              <Image src="/images/shoppingBag.png" alt="Cart" width={30} height={30} />
+              {cartQuantity > 0 && (
+                <span className="absolute -top-2 -right-2 bg-softCoral text-softWhite text-xs flex items-center justify-center h-5 w-5 rounded-full shadow-lg">
+                  {cartQuantity}
+                </span>
+              )}
+            </Link>
+          )}
+        </nav>
+      </div>
+
+      {/* Mobile dropdown */}
+      {opened && (
+        <nav className="flex flex-col items-center md:hidden py-4 space-y-2">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className="py-2 text-softBrown font-body hover:text-green transition"
               onClick={() => setOpened(false)}
             >
               {link.name}
             </Link>
           ))}
-          
-          {/* Cart */}
-        <Link href="/checkout" 
-              className="hidden md:block transition hover:scale-110">
-          <Image
-            src="/images/shoppingBag.png"
-            alt="Cart"
-            width={45}
-            height={45}
-                      />
-
-            {cart.length > 0 && (
-      <span className="absolute -top-2 -right-2 bg-softCoral text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
-        {cart.reduce((acc, item) => acc + item.quantity, 0)}
-      </span>
-    )}
-        </Link>
-        </div>
-      </nav>
+        </nav>
+      )}
     </header>
   );
 }

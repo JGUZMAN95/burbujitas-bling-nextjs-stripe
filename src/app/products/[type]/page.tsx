@@ -26,10 +26,12 @@ export default async function ProductsByTypePage({ params }: Props) {
   }
 
   return (
-    <div className="p-6">
-        {products.map((product) => (
-          <OverviewProductCard key={product._id} product={product} />
-        ))}
+    <div className="break-normal justify-center p-5">
+      <div className="grid md:grid-cols-3 lg:grid-cols-5 grid-cols-2 gap-5">
+          {products.map((product) => (
+            <OverviewProductCard key={product._id} product={product} />
+          ))}
+      </div>
     </div>
   );
 }
