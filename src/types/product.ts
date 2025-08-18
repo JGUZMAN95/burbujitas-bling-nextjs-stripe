@@ -1,14 +1,15 @@
+import { SanityImageSource } from '@sanity/image-url/lib/types/types';
+
 export type Product = {
-  _id: string;
-  _type: "product";
+  _id: string;                   // Sanity document ID
+  _createdAt: string;            // Timestamp
   name: string;
-  slug: { _type: "slug"; current: string };
-  description?: string;
-  price: number;
-  color: string;
-  image?: {
-    _type: "image";
-    asset: { _ref: string; _type: "reference" };
+  slug: {
+    current: string;
   };
-  productType?: string;
+  description: string;
+  price: number;
+  image: SanityImageSource;      // Used with urlFor()
+  color: string;
+  productType: "rings" | "bracelets" | "anklets" | "necklaces" | "beauty" | "handchains" | "stickers|"; // optional stricter type
 };

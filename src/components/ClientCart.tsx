@@ -1,85 +1,107 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import type { Product} from "@/src/types/product";
-import type { CartProduct } from "@/src/types/cart";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { Product } from "../types/product";
 
-export default function ClientCart() {
-  const [cart, setCart] = useState<CartProduct[]>([]);
+// Extend Product to include quantity for cart
+export interface CartItem extends Product {
+  quantity: number;
+}
 
-  // Load cart from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem("cart");
-    if (stored) {
-      setCart(JSON.parse(stored));
+export default function CartClient() {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  // Load cart from cookie
+  const loadCart = () => {
+    const cookieCart = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("cart="));
+    if (cookieCart) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(cookieCart.split("=")[1]));
+        setCart(parsed);
+      } catch {
+        setCart([]);
+      }
+    } else {
+      setCart([]);
     }
-  }, []);
-
-  // Save cart whenever it updates
-  const updateCart = (updated: CartProduct[]) => {
-    setCart(updated);
-    localStorage.setItem("cart", JSON.stringify(updated));
   };
 
-  // Increase quantity
-  const incrementQuantity = (product: CartProduct) => {
+  useEffect(() => {
+    loadCart();
+    const handler = () => loadCart();
+    document.addEventListener("cart-updated", handler);
+    return () => document.removeEventListener("cart-updated", handler);
+  }, []);
+
+  const updateCart = (updatedCart: CartItem[]) => {
+    document.cookie = `cart=${encodeURIComponent(JSON.stringify(updatedCart))}; path=/; max-age=${
+      60 * 60 * 24 * 7
+    }`;
+    setCart(updatedCart);
+    window.dispatchEvent(new Event("cart-updated"));
+  };
+
+  const incrementQuantity = (product: CartItem) => {
     const updated = cart.map((p) =>
       p._id === product._id ? { ...p, quantity: p.quantity + 1 } : p
     );
     updateCart(updated);
   };
 
-  // Decrease quantity (min 1)
-  const decrementQuantity = (product: CartProduct) => {
-    const updated = cart.map((p) =>
-      p._id === product._id && p.quantity > 1
-        ? { ...p, quantity: p.quantity - 1 }
-        : p
-    );
+  const decrementQuantity = (product: CartItem) => {
+    const updated = cart
+      .map((p) =>
+        p._id === product._id ? { ...p, quantity: Math.max(p.quantity - 1, 1) } : p
+      )
+      .filter((p) => p.quantity !== 0);
     updateCart(updated);
   };
 
-  // Remove product entirely
-  const removeFromCart = (product: CartProduct) => {
+  const removeFromCart = (product: CartItem) => {
     const updated = cart.filter((p) => p._id !== product._id);
     updateCart(updated);
   };
 
-  // Calculate total
-  const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2);
+
+  if (!cart.length) return <div className="p-6">Your cart is empty</div>;
 
   return (
-    <div>
-      <h2>Your Cart</h2>
-
-      {cart.length === 0 ? (
-        <p>No items yet!</p>
-      ) : (
-        <div>
-          {cart.map((item) => (
-            <div key={item._id} className="cart-item">
-              {item.imageUrl && (
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  width={100}
-                  height={100}
-                />
-              )}
-              <h3>{item.name}</h3>
-              <p>${item.price}</p>
-              <p>Qty: {item.quantity}</p>
-
-              <button onClick={() => decrementQuantity(item)}>-</button>
-              <button onClick={() => incrementQuantity(item)}>+</button>
-              <button onClick={() => removeFromCart(item)}>Remove</button>
-            </div>
-          ))}
-
-          <hr />
-          <h3>Total: ${total.toFixed(2)}</h3>
+    <div className="p-6 space-y-6">
+      {cart.map((item) => (
+        <div key={item._id} className="flex justify-between items-center border-b pb-4">
+          <Link href={`/products/${item.productType}/${item.slug.current}`} className="flex-1">
+            <h3 className="text-softCoral font-heading">{item.name}</h3>
+          </Link>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => decrementQuantity(item)}
+              className="px-2 py-1 bg-gray-200 rounded"
+            >
+              -
+            </button>
+            <span>{item.quantity}</span>
+            <button
+              onClick={() => incrementQuantity(item)}
+              className="px-2 py-1 bg-gray-200 rounded"
+            >
+              +
+            </button>
+          </div>
+          <div className="text-softBrown">${(item.price * item.quantity).toFixed(2)}</div>
+          <button
+            onClick={() => removeFromCart(item)}
+            className="ml-4 text-red-500 hover:underline"
+          >
+            Remove
+          </button>
         </div>
-      )}
+      ))}
+
+      <div className="text-right font-bold text-lg">Total: ${total}</div>
     </div>
   );
 }

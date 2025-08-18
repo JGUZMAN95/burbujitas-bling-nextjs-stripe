@@ -1,6 +1,6 @@
 // /src/pages/api/cart.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { sanityClient } from "@/lib/sanity/client";
+import { sanityClient } from "@/src/lib/sanity/client";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const cartCookie = req.cookies.cart || "[]";

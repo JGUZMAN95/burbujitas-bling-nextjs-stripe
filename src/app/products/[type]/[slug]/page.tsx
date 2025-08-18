@@ -1,9 +1,10 @@
-import { sanityClient, urlFor } from "@/lib/sanity/client";
+import { sanityClient } from "@/src/lib/sanity/client";
+import {urlFor} from "@/src/lib/sanity/image"
 import { Product } from '@/src/types/product';
 import DynamicProductCard from "@/src/components/DynamicProductCard"
 
 type Props = {
-  params: { slug: string; type: string };
+  params: { slug: string; type: string};
 };
 
 export default async function ProductPage({ params }: Props) {
@@ -16,7 +17,7 @@ export default async function ProductPage({ params }: Props) {
     return <div className="p-6">Product not found</div>;
   }
 
-  const imageUrl = product.image ? urlFor(product.image).url() : "/placeholder.png";
+  const imageUrl = product.image ? urlFor(product.image): "/placeholder.png";
 
   return (
       <div>

@@ -6,17 +6,6 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import classNames from "classnames";
 
-// Tailwind colors
-const colors = {
-  softWhite: "#FFF8F0",
-  softBrown: "#bb936eff",
-  softCoral: "#E07A5F",
-  softBlue: "#9DBDD9",
-  softPink: "#FADADD",
-  green: "#a6ba5c",
-  softYellow: "#F3D87F",
-};
-
 // Product types
 const productTypes = [
   "rings",
