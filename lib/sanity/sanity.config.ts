@@ -1,16 +1,14 @@
-import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
-import {visionTool} from '@sanity/vision'
 import {schemaTypes} from '../../sanity/schemaTypes'
 
-export default defineConfig({
+export default ({
   name: 'default',
   title: 'burbujitas-and-bling',
 
-  projectId: '1pcq3sxq',
-  dataset: 'production',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
 
-  plugins: [structureTool(), visionTool()],
+  plugins: [structureTool()],
 
   schema: {
     types: schemaTypes,

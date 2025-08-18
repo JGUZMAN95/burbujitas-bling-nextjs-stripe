@@ -3,7 +3,7 @@ import { Product } from '@/src/types/product';
 import DynamicProductCard from "@/src/components/DynamicProductCard"
 
 type Props = {
-  params: { slug: string };
+  params: { slug: string; type: string };
 };
 
 export default async function ProductPage({ params }: Props) {
