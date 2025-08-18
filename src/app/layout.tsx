@@ -11,9 +11,9 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
   return (
     <html lang="en" className='bg-softPink'>
       <body>
-        <Header className='min-height:100vh'/>
+        <Header/>
         <main>{children}</main>
-        <Footer className='min-height:100vh'/>
+        <Footer/>
       </body>
     </html>
   );

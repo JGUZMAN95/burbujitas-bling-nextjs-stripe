@@ -1,15 +1,15 @@
-import { defineType } from 'sanity';
+import type { Rule } from '@sanity/types'
 
-export const product = defineType({
+export const product = ({
   name: 'product',
   type: 'document',
   title: 'Product',
   fields: [
-    { name: 'name', type: 'string', validation: (rule) => rule.required() },
-    { name: 'slug', type: 'slug', options: { source: 'name', maxLength: 96 }, validation: (rule) => rule.required() },
+    { name: 'name', type: 'string', validation: (rule: Rule) => rule.required() },
+    { name: 'slug', type: 'slug', options: { source: 'name', maxLength: 96 }, validation: (rule: Rule) => rule.required() },
     { name: 'description', type: 'text' },
-    { name: 'price', type: 'number', validation: (rule) => rule.required() },
-    { name: 'image', type: 'image', options: { hotspot: true } },
+    { name: 'price', type: 'number', validation: (rule: Rule) => rule.required() },
+    { name: 'image', type: 'image', options: { hotspot: true }, validation: (rule: Rule) => rule.required() },
     { name: 'color', type: 'string' },
     {
       name: "productType",
