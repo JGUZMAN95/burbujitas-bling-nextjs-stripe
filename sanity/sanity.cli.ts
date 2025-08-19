@@ -1,10 +1,10 @@
+// sanity/sanity.cli.ts
 import { defineCliConfig } from "sanity/cli";
-import { projectId, dataset } from "../src/lib/sanity/client";
 
 export default defineCliConfig({
   api: {
-    projectId,
-    dataset,
+    projectId: process.env.SANITY_STUDIO_PROJECT_ID || "yourProjectId",
+    dataset: process.env.SANITY_STUDIO_DATASET || "production",
   },
   autoUpdates: false,
 });

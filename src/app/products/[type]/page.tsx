@@ -1,4 +1,4 @@
-import { sanityClient } from "@/src/lib/sanity/client";
+import { client } from "@/src/lib/sanity/client";
 import { Product } from "@/src/types/product";
 import OverviewProductCard from "@/src/components/OverviewProductCard";
 
@@ -7,7 +7,7 @@ type Props = {
 };
 
 export default async function ProductsByTypePage({ params }: Props) {
-  const products: Product[] = await sanityClient.fetch(
+  const products: Product[] = await client.fetch(
     `*[_type == "product" && productType == $type]{
       _id,
       name,
