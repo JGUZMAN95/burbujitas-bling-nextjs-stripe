@@ -1,10 +1,10 @@
 import { getProducts } from "@/src/lib/sanity/queries";
 import { Product } from "../types/product";
 import OverviewProductCard from "../components/OverviewProductCard";
-import { sanityClient } from "@/src/lib/sanity/client";
+import { client } from "@/src/lib/sanity/client";
 
 export default async function HomePage() {
-  const products: Product[] = await sanityClient.fetch(getProducts);
+  const products: Product[] = await client.fetch(getProducts);
 
   return (
     <div className="grid md:grid-cols-3 lg:grid-cols-5 grid-cols-2 gap-5">

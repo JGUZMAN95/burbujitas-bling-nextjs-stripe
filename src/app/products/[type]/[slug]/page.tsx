@@ -1,4 +1,4 @@
-import { sanityClient } from "@/src/lib/sanity/client";
+import { client } from "@/src/lib/sanity/client";
 import {urlFor} from "@/src/lib/sanity/image"
 import { Product } from '@/src/types/product';
 import DynamicProductCard from "@/src/components/DynamicProductCard"
@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default async function ProductPage({ params }: Props) {
-  const product: Product = await sanityClient.fetch(
+  const product: Product = await client.fetch(
   `*[_type == "product" && productType == $type && slug.current == $slug][0]`,
   { type: params.type, slug: params.slug }  // ✅ pass both params
 );
@@ -27,7 +27,7 @@ export default async function ProductPage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  const products: Product[] = await sanityClient.fetch(`*[_type == "product"]{ productType, slug }`);
+  const products: Product[] = await client.fetch(`*[_type == "product"]{ productType, slug }`);
   return products.map((p) => ({
     slug: p.slug.current,
   }));

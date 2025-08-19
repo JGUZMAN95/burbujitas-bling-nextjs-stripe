@@ -1,6 +1,6 @@
 // /src/pages/api/cart.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { sanityClient } from "@/src/lib/sanity/client";
+import { client } from "@/src/lib/sanity/client";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const cartCookie = req.cookies.cart || "[]";
@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const enriched = await Promise.all(
     cart.map(async (item: { _id: string; quantity: number }) => {
-      const product = await sanityClient.fetch(
+      const product = await client.fetch(
         `*[_type == "product" && _id == $id][0]{ 
           _id, 
           name, 
