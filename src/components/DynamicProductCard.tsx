@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Product } from "../types/product";
-import { urlFor } from "@/lib/sanity/client";
+import { urlFor } from "@/src/lib/sanity/image";
 
 interface DynamicProductCardProps {
   product: Product;
@@ -10,7 +10,7 @@ interface DynamicProductCardProps {
 
 export default function DynamicProductCard({ product }: DynamicProductCardProps) {
   const [adding, setAdding] = useState(false);
-  const imageUrl = product.image ? urlFor(product.image).url() : "/placeholder.png";
+  const imageUrl = product.image ? urlFor(product.image) : "/placeholder.png";
 
   const getCart = (): {
     _id: string;

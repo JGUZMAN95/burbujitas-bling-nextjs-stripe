@@ -1,16 +1,16 @@
-import type { Rule } from '@sanity/types'
+import { defineType } from "sanity";
 
-export const product = ({
-  name: 'product',
-  type: 'document',
-  title: 'Product',
+export const product = defineType({
+  name: "product",
+  type: "document",
+  title: "Product",
   fields: [
-    { name: 'name', type: 'string', validation: (rule: Rule) => rule.required() },
-    { name: 'slug', type: 'slug', options: { source: 'name', maxLength: 96 }, validation: (rule: Rule) => rule.required() },
-    { name: 'description', type: 'text' },
-    { name: 'price', type: 'number', validation: (rule: Rule) => rule.required() },
-    { name: 'image', type: 'image', options: { hotspot: true }, validation: (rule: Rule) => rule.required() },
-    { name: 'color', type: 'string' },
+    { name: "name", type: "string"},
+    { name: "slug", type: "slug", options: { source: "name", maxLength: 96 } },
+    { name: "description", type: "text" },
+    { name: "price", type: "number" },
+    { name: "image", type: "image", options: { hotspot: true } },
+    { name: "color", type: "string" },
     {
       name: "productType",
       type: "string",
@@ -28,3 +28,5 @@ export const product = ({
     },
   ],
 });
+
+export const schemaTypes = [product];

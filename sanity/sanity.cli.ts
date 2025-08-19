@@ -1,11 +1,10 @@
-import {defineCliConfig} from 'sanity/cli'
-import { dataset, projectId } from '../lib/sanityClient'
+import { defineCliConfig } from "sanity/cli";
+import { projectId, dataset } from "../src/lib/sanity/client";
 
 export default defineCliConfig({
   api: {
-    projectId: projectId!,
-    dataset: dataset!,
+    projectId,
+    dataset,
   },
-
   autoUpdates: false,
-})
+});
