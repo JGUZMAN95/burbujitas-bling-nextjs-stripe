@@ -18,6 +18,7 @@ export default function RootLayout({children,}: {children: React.ReactNode}) {
         width={800}
         height={800}
         className="rounded-lg"
+         priority 
       />
     </div>
     </body>
