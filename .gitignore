@@ -40,3 +40,6 @@ next-env.d.ts
 
 # video
 public/videos/OwnerCrafting.mp4
+
+# Local Netlify folder
+.netlify

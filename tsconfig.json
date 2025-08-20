@@ -1,28 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
+    "target": "ES2022",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "allowJs": true,
     "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
       "@/*": [
-        "./*"
+        "*"
       ]
     },
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "noEmit": true,
     "incremental": true,
     "plugins": [
       {
@@ -32,8 +32,8 @@
   },
   "include": [
     "next-env.d.ts",
-    "src/**/*",
-    "lib/sanity/**/*",
+    "**/*.ts",
+    "**/*.tsx",
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -1,40 +1,49 @@
-import Button from '../../components/StaticButton'
+"use client";
 
-export default async function ContactUs() {
+import Button from "@/components/Buttons/StaticButton";
+
+export default function ContactUs() {
   return (
+    <div className="min-h-full flex justify-center font-accent text-softCoral place-items-center">
+      <form className="w-full max-w-sm bg-softWhite/50 shadow-md p-6 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+        {/* Header */}
+        <div className="col-span-1 md:col-span-2 justify-center md:justify-start">
+          <header className="text-lg font-bold">Contact Us</header>
+        </div>
 
-    <div className='grid md:justify-center font-accent text-softCoral p-3'>
-       <form className='md:grid grid-col-2 gap-x-8 gap-y-5 focus:outline-none md:m-10'>
-            <div className='col-span-2 md:place-items-start place-items-center'>
-                <header className='text-base'>Contact Us</header>
-            </div>
+        {/* Name */}
+        <div>
+          <label className="block mb-1 font-semibold">Name:</label>
+          <input
+            type="text"
+            name="username"
+            className="bg-softWhite w-full  shadow p-2 focus:outline-none focus:ring-2 focus:ring-softCoral"
+          />
+        </div>
 
-            <div>
-                <label>Name: </label>
+        {/* Email */}
+        <div>
+          <label className="block mb-1 font-semibold">Email:</label>
+          <input
+            type="email"
+            className="bg-softWhite w-full shadow p-2 focus:outline-none focus:ring-2 focus:ring-softCoral"
+          />
+        </div>
 
-                <input type='text'
-                    className='bg-softWhite w-full rounded-md shadow block grow p-2' 
-                    name="username"></input>
-            </div>
+        {/* Message */}
+        <div className="col-span-1 md:col-span-2">
+          <label className="block mb-1 font-semibold">Message:</label>
+          <textarea
+            rows={4}
+            className="bg-softWhite w-full shadow p-2 focus:outline-none focus:ring-2 focus:ring-softCoral"
+          />
+        </div>
 
-            <div>
-                <label>Email: </label>
-
-                <input type='email' 
-                className='bg-softWhite  w-full rounded-md shadow block grow p-2'></input>
-            
-            </div>
-
-            <div className='col-span-2 flex flex-col'>
-                <label>Message: </label>
-
-                <textarea rows={3} className='bg-softWhite w-full rounded-md shadow block grow p-2'></textarea>
-            </div>
-
-            <div className='mt-6 grid col-span-2 flex items-center '>
-                <Button>Send</Button>
-            </div>
-        </form> 
+        {/* Submit Button */}
+        <div className="col-span-1 md:col-span-2 mt-4">
+          <Button className="w-full">Send</Button>
+        </div>
+      </form>
     </div>
   );
 }
