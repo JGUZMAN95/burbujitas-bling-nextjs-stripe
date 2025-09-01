@@ -2,23 +2,23 @@ import Image from "next/image";
 
 export default function AboutUs() {
   return (
-    <main className="min-h-full flex items-center justify-center">
-      <div className="max-w-xl mx-auto bg-softWhite/60 p-6 text-softBrown grid md:grid-cols-[2fr_1fr] grid-rows-1 gap-8 justify-items-center items-center">
+    <main className="min-h-full flex items-center justify-center p-6">
+      <div className="max-w-xl mx-auto bg-softWhite/50 p-6 text-softBrown grid md:grid-cols-[2fr_1fr] grid-rows-1 gap-8 justify-items-center items-center">
         {/* Image */}
         <div className="max-w-[150px] md:max-w-xs order-first md:order-last">
           <Image
-            src="/images/body/Owner.png"
+            src="/images/body/owner.png"
             alt="Owner"
             width={150}
             height={150}
-            className="rounded-lg object-cover w-full h-auto"
+            className="rounded-sm object-cover w-full h-auto"
             priority
           />
         </div>
 
         {/* Left: Text */}
         <div className="font-accent text-center flex flex-col justify-center gap-2">
-          <p className="text-base">Hi, I’m Jocelyn</p>
+          <p className="text-lg">Hi, I’m Jocelyn</p>
           <p>
             The heart and hands behind Burbujitas & Bling. My brand is all about
             celebrating self-love, beauty, and my Latina roots through dainty

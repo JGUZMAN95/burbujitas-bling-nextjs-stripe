@@ -1,131 +1,172 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ImageComponent from "../Body/ImageComponent";
 import ClickableImage from "../Buttons/ClickableImage";
-import handleCheckout from "@/components/Cart/LoadStripe";
 import Button from "../Buttons/StaticButton";
 import Image from "next/image";
 import { getCookie, setCookie } from "@/utils/cookies";
 import Link from "next/link";
+import { Product } from "@/types/product-type";
+import handleCheckout from "@/components/Cart/LoadStripe";
 
+//TODO:
+// Split into components:
+// CartItemRow for individual product row.
+// CartEmptyState for empty cart.
+// CartTotals for subtotal and checkout.
 export default function CartSummary() {
-  const [cart, setCart] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const getCart = () => getCookie("cart") ?? [];
+  const getCart = (): Product[] => {
+    const cookieCart = getCookie("cart");
+    const parsed =
+      typeof cookieCart === "string" ? JSON.parse(cookieCart) : cookieCart;
 
+    if (!cookieCart) {
+      console.error("Failed to parse cart cookie:", cookieCart);
+      return [];
+    }
+
+    return parsed;
+  };
+
+  const showStatus = (message: string, duration = 3000) => {
+    setStatusMessage(message);
+    setTimeout(() => setStatusMessage(null), duration);
+  };
+
+  // Sync cart state with cookie on mount and when cookie changes.
   useEffect(() => {
-    const handler = () => setCart(getCart());
+    const handler = () => setCartItems(getCart());
     window.addEventListener("cart-updated", handler, { passive: true });
-    setCart(getCart());
+    setCartItems(getCart());
     return () => window.removeEventListener("cart-updated", handler);
   }, []);
 
+  // Update item quantity in cart.
   const updateQuantity = (_id: string, delta: number) => {
-    const newCart = cart
+    const newCart = cartItems
       .map((item) =>
         item._id === _id
-          ? { ...item, stripeQuantity: item.stripeQuantity + delta }
+          ? { ...item, stripeQuantity: (item.stripeQuantity || 1) + delta }
           : item
       )
-      .filter((item) => item.stripeQuantity > 0);
+      .filter((item) => item.stripeQuantity! > 0);
 
-    setCart(newCart);
+    setCartItems(newCart);
     setCookie("cart", newCart, 3);
     window.dispatchEvent(new Event("cart-updated"));
   };
 
   const removeItem = (_id: string) => {
-    const newCart = cart.filter((item) => item._id !== _id);
-    setCart(newCart);
+    const newCart = cartItems.filter((item) => item._id !== _id);
+    setCartItems(newCart);
     setCookie("cart", newCart, 3);
     window.dispatchEvent(new Event("cart-updated"));
   };
 
-  const subtotal = cart.reduce(
-    (acc, item) => acc + item.price * item.stripeQuantity,
-    0
+  // Calculate subtotal.
+  const subtotal = useMemo(
+    () =>
+      cartItems.reduce(
+        (acc, item) => acc + Number(item.price) * (item.stripeQuantity || 1),
+        0
+      ),
+    [cartItems]
   );
 
-  if (!cart.length)
+  if (!cartItems.length)
     return (
-      <div className="flex flex-col justify-center items-center text-center gap-4 h-full">
-        <img
-          src="/images/body/emptybag.png"
+      <div className="justify-center items-start text-center gap-4 h-full p-2">
+        <Image
+          src="/images/icons/empty-bag.png"
           alt="Burbujitas & Bling"
           width={200}
           height={300}
-          className="mt-6"
+          className="items-center mx-auto"
         />
         <p>
           Opsies... <br />
           Your cart is empty
         </p>
 
-        <Link href={`/`}>
-          <Button className="w-60 bg-softBlue/60">Shop Till You Drop</Button>
+        <Link
+          href={`/`}
+          /* Call a close function instead. This avoids relying on global events.*/
+          onClick={() => window.dispatchEvent(new Event("close-cart"))}
+        >
+          <Button className="w-full bg-softBlue/60">Shop Till You Drop</Button>
         </Link>
       </div>
     );
 
   return (
-    <div className="flex justify-center items-center h-full">
-      <div className="flex flex-col bg-softWhite/60 font-body justify-center py-6 px-4 shadow-md max-w-xl w-full mx-auto p-2">
-        <h1 className="text-base uppercase">Your Carito</h1>
+    <div className="justify-center items-center min-h-full py-7">
+      <div className="font-body justify-center max-w-full w-full mx-auto py-5 px-4">
+        <h1 className="text-base uppercase pb-4">Your Carito</h1>
 
-        {cart.map((item) => (
-          <div
-            key={item._id}
-            className="relative grid border-b-2 border-softBrown/10 p-2"
-          >
-            <div className="place-items-end">
-              {/* Trash icon */}
-              <button
-                onClick={() => removeItem(item._id)}
-                className="absolute top-2 right-2"
-              >
-                <Image
-                  src="/images/body/TrashBin.png"
-                  alt="remove"
-                  width={35}
-                  height={35}
-                  priority
-                />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-[auto,1fr] gap-2">
-              <div className="w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 relative aspect-square">
-                <ClickableImage
-                  productType={item.category}
-                  productSlug={item.slug}
-                >
-                  <ImageComponent image={item.images[0]} />
-                </ClickableImage>
-              </div>
-
-              {/* Product details + quantity + price */}
-              <div className="place-items-start">
-                <p className="font-bold whitespace-nowrap truncate">
-                  {item.name} | ${item.price}
-                </p>
-                <div
-                  className={`flex h-[2rem] px-3 gap-5 justify-center place-items-start items-center transition-fade-in duration-500 ${
-                    item.stripeQuantity === 1
-                      ? "bg-softCoral/20"
-                      : "bg-softPink/60"
-                  }`}
-                >
-                  <button onClick={() => updateQuantity(item._id, -1)}>
-                    -
+        <ul>
+          {cartItems.map((item) => (
+            <li>
+              <div key={item._id} className=" border-softBrown/10 gap-2 pb-4">
+                <div className="flex justify-between items-start mb-4 border-b border-softBrown/20">
+                  <p className="font-bold whitespace-nowrap">
+                    {item.name} | ${Number(item.price).toFixed(2)}
+                  </p>
+                  {/* Trash icon */}
+                  <button
+                    className="mb-2"
+                    aria-label="remove"
+                    onClick={() => removeItem(item._id)}
+                  >
+                    <Image
+                      src="/images/icons/trash-bin.png"
+                      alt="remove"
+                      width={24}
+                      height={24}
+                      priority
+                    />
                   </button>
-                  {item.stripeQuantity}
-                  <button onClick={() => updateQuantity(item._id, 1)}>+</button>
+                </div>
+
+                {/* Product details + quantity + price */}
+                <div className="justify-between items-center h-full flex gap-4">
+                  <div className="w-24 h-24 relative aspect-square">
+                    <ClickableImage
+                      productType={item.category}
+                      productSlug={item.slug}
+                    >
+                      <ImageComponent image={item.images[0]} />
+                    </ClickableImage>
+                  </div>
+                  <div
+                    className={`flex h-[2rem] px-3 gap-5 justify-center place-items-start items-center transition-fade-in duration-500 ${
+                      item.stripeQuantity === 1
+                        ? "bg-softCoral/20"
+                        : "bg-softPink/60"
+                    }`}
+                  >
+                    <button
+                      aria-label={`Decrease quantity of ${item.name}`}
+                      onClick={() => updateQuantity(item._id, -1)}
+                    >
+                      <span className="text-lg font-bold">−</span>
+                    </button>
+                    {item.stripeQuantity}
+                    <button
+                      aria-label={`Increase quantity of ${item.name}`}
+                      onClick={() => updateQuantity(item._id, 1)}
+                    >
+                      <span className="text-lg font-bold">+</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ))}
+            </li>
+          ))}
+        </ul>
 
         {/* Totals + Checkout */}
         <div className="grid mt-4">
@@ -137,10 +178,22 @@ export default function CartSummary() {
 
         {/* Checkout button */}
         <div className="grid w-full mt-2">
-          <Button onClick={() => handleCheckout(cart)}>Next Step</Button>
-          <p className="text-center text-softBrown text-bold text-xs text-gray-600 mt-1">
+          <Button
+            onClick={() =>
+              handleCheckout({ cart: cartItems, onStatus: showStatus })
+            }
+          >
+            Next Step
+          </Button>{" "}
+          <p className="text-center text-softBrown text-xs mt-1">
             Taxes and shipping calculated at checkout
           </p>
+          {/* Status message display */}
+          {statusMessage && (
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-softCoral text-white px-4 py-2 rounded shadow-md">
+              {statusMessage}
+            </div>
+          )}
         </div>
       </div>
     </div>

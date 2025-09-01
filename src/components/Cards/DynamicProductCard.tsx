@@ -1,20 +1,34 @@
+"use client";
+
 import React from "react";
-import ImageComponent from "../Body/ImageComponent";
 import AddToCartButton from "../Cart/AddToCartButton";
-import { Product } from "@/types/product";
-import { urlFor } from "@/lib/sanityClient";
+import { Product } from "@/types/product-type";
+import { urlFor } from "@/lib/sanity-client";
 import ProductGallery from "./ProductGallery";
+import Image from "next/image";
 
 interface DynamicProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({ product }: DynamicProductCardProps) {
+// Dynamic product card displaying images, details, and add-to-cart functionality.
+export default function DynamicProductCard({
+  product,
+}: DynamicProductCardProps) {
+  const formattedPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  }).format(product.price);
+
+  const categoryLabel = product.category
+    ? product.category[0].toUpperCase() + product.category.slice(1)
+    : "";
+
   return (
-    <div className="max-w-5xl w-full mx-auto text-softBrown font-accent md:grid md:grid-cols-3 md:gap-2">
+    <div className="max-w-5xl w-full mx-auto text-softBrown font-accent md:grid md:grid-cols-3 md:gap-4">
       {/* Image Section */}
       <div className="md:col-span-2">
-        {/* Mobile Gallery - square swiper */}
+        {/* Mobile Gallery - Swiper */}
         <div className="sm:hidden aspect-square w-full">
           <ProductGallery
             images={product.images}
@@ -22,14 +36,16 @@ export default function ProductCard({ product }: DynamicProductCardProps) {
           />
         </div>
 
-        {/* Desktop Gallery */}
+        {/* Desktop Grid Gallery */}
         <div className="hidden sm:grid sm:grid-cols-2 gap-2 p-2">
           {product.images.map((image, idx) => (
             <div key={idx} className="aspect-square w-full">
-              <img
-                src={urlFor(image).width(600).height(600).url()}
-                alt={`Product image ${idx + 1}`}
-                className="object-contain"
+              <Image
+                src={urlFor(image).width(900).height(900).url()}
+                alt={`${product.name} - image ${idx + 1}`}
+                width={900}
+                height={900}
+                className="object-contain w-full h-full"
               />
             </div>
           ))}
@@ -37,27 +53,21 @@ export default function ProductCard({ product }: DynamicProductCardProps) {
       </div>
 
       {/* Product Info */}
-      <div className="mb-2 p-2 font-body text-softCoral/50 text-md flex flex-col md:gap-10 gap-5">
+      <div className="mb-2 p-2 font-body text-softCoral/50 text-md flex flex-col gap-y-6">
         <div>
-          <h3 className="font-accent text-lg uppercase">{product.name}</h3>
-          <p className="md:mb-4">${Number(product.price)}</p>
-          {product.color && (
-            <div className="mb-4">
-              <p>Color:</p>
-              <p>{product.color}</p>
-            </div>
-          )}
+          <h3 className="font-accent text-lg">{product.name}</h3>
+          <p className="md:mb-4">{formattedPrice}</p>
+          {product.color && <p className="mb-4">Color: {product.color}</p>}
         </div>
 
-        <div className="grid gap-2 text-darkBrown text-md text-sm">
-          <AddToCartButton product={product} />
+        {/* Add to Cart + Description */}
+        <div className="grid gap-2 text-darkBrown text-sm">
+          <AddToCartButton
+            product={product}
+            aria-label={`Add ${product.name} to cart`}
+          />
           <p className="font-extrabold text-base">
-            <span>
-              {product.name}{" "}
-              {product.category.charAt(0).toUpperCase() +
-                product.category.slice(1, -1)}
-            </span>
-            {" Design"}
+            {product.name} {categoryLabel} Design
           </p>
           <p>{product.description}</p>
         </div>

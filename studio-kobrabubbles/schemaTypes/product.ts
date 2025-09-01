@@ -1,6 +1,7 @@
 // studio-kobrabubbles/schemas/schemaTypes/product.ts
 import {defineType} from 'sanity'
 
+// Define the schema for the "product" document type in Sanity.
 export default defineType({
   name: 'product',
   title: 'Product',
@@ -10,6 +11,8 @@ export default defineType({
     {name: 'slug', title: 'Slug', type: 'slug', options: {source: 'name'}},
     {name: 'description', title: 'Description', type: 'text'},
     {name: 'price', title: 'Price', type: 'number'},
+    {name: 'length', title: 'Length', type: 'number'},
+    {name: 'size', title: 'Weight', type: 'number'},
     {
       name: 'images',
       title: 'Images',
@@ -27,13 +30,13 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          {title: 'Rings', value: 'rings'},
-          {title: 'Bracelets', value: 'bracelets'},
-          {title: 'Anklets', value: 'anklets'},
-          {title: 'Necklaces', value: 'necklaces'},
+          {title: 'Ring', value: 'rings'},
+          {title: 'Bracelet', value: 'bracelets'},
+          {title: 'Anklet', value: 'anklets'},
+          {title: 'Necklace', value: 'necklaces'},
           {title: 'Beauty', value: 'beauty'},
-          {title: 'Handchains', value: 'handchains'},
-          {title: 'Stickers', value: 'stickers'},
+          {title: 'Hand Chain', value: 'handchains'},
+          {title: 'Sticker', value: 'stickers'},
         ],
       },
     },

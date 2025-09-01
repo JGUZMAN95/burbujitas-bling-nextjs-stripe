@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+// Tailwind CSS configuration file
+// specifying content paths, theme extensions, and plugins.
 export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -17,7 +20,7 @@ export default {
       fontSize: {
         xs: "12px",
         sm: "14px",
-        base: "16px", // your default body text
+        base: "16px", // default body text
         md: "20px", // subheadings
         lg: "28px", // section headers
         xl: "36px", // hero text
@@ -32,4 +35,5 @@ export default {
     },
   },
   plugins: [require("tailwind-hamburgers")],
+  safelist: [{ pattern: /(fill|stroke|text)-softBrown/ }],
 };

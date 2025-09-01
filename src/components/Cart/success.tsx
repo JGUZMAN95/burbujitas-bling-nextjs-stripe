@@ -3,23 +3,59 @@
 import ClickableImage from "../Buttons/ClickableImage";
 import ImageComponent from "../Body/ImageComponent";
 
-type SuccessLineProps = {
-  sessionData: any;
+// Types for Stripe session data.
+type LineItem = {
+  id: string;
+  quantity: number;
+  price: {
+    unit_amount: number;
+    product: {
+      name: string;
+      images: string[];
+      metadata: {
+        category: string;
+        slug: string;
+      };
+    };
+  };
+};
+// Simplified session data type.
+type SessionData = {
+  line_items?: { data: LineItem[] };
+  total_details?: { amount_discount?: number };
+  amount_subtotal?: number;
+  amount_total?: number;
+  shipping_cost?: { amount_total?: number };
+  customer_details?: {
+    name?: string;
+    address?: {
+      line1?: string;
+      line2?: string;
+      city?: string;
+      state?: string;
+      postal_code?: string;
+    };
+  };
 };
 
+// Props for the SuccessLine component.
+type SuccessLineProps = {
+  sessionData: SessionData;
+};
+
+// Component to display order success details.
 export default function SuccessLine({ sessionData }: SuccessLineProps) {
-  if (!sessionData) {
-    return <p className="text-center font-bold">Proccesing Transaction...</p>;
-  }
+  if (!sessionData) return null;
 
   const lineItems = sessionData.line_items?.data || [];
-
+  const fullName = sessionData.customer_details?.name;
+  const firstName = fullName?.trim().split(/\s+/)[0];
   return (
-    <div className="bg-softWhite/60 font-body justify-center py-6 px-4 shadow-md max-w-2xl w-full mx-auto p-2">
+    <div className="bg-softWhite/60 font-body justify-center py-4 px-4 shadow-md w-full mx-auto">
       {/* Order Confirmation */}
       <div className="text-center mb-4">
         <h1 className="text-lg font-bold">Order Confirmed</h1>
-        <h2 className="text-xl">Hi, Amiga</h2>
+        <h2 className="text-xl">Hi, {firstName || "Amiga"}</h2>
         <p className="mt-2">
           Your order has been received! Thanks for supporting this little
           business of mine.
@@ -29,8 +65,12 @@ export default function SuccessLine({ sessionData }: SuccessLineProps) {
       </div>
 
       {/* Products */}
-      {lineItems.map((item: any) => {
-        const product = item.price.product as any;
+      {lineItems.map((item) => {
+        const product = item.price.product ?? {
+          name: "Unknown",
+          images: [],
+          metadata: {},
+        };
         return (
           <div
             key={item.id}
@@ -42,7 +82,12 @@ export default function SuccessLine({ sessionData }: SuccessLineProps) {
                 productType={product.metadata.category}
                 productSlug={product.metadata.slug}
               >
-                <ImageComponent image={product.images[0]} />
+                <ImageComponent
+                  alt="product image"
+                  image={
+                    product.images?.[0] ?? "/images/fallbacks/placeholder.png"
+                  }
+                />
               </ClickableImage>
             </div>
 

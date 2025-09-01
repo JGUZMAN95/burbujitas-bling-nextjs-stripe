@@ -1,6 +1,6 @@
 "use client";
 
-import { Product } from "@/types/product";
+import { Product } from "@/types/product-type";
 import { useState } from "react";
 import Button from "../Buttons/StaticButton";
 
@@ -8,8 +8,6 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [adding, setAdding] = useState(false);
 
   const handleAdd = () => {
-    // Resolve image URL (first image)
-
     // Get current cart from cookies
     const cartCookie = document.cookie
       .split("; ")
@@ -41,11 +39,5 @@ export default function AddToCartButton({ product }: { product: Product }) {
     setAdding(false);
   };
 
-  return (
-    <Button
-      onClick={handleAdd}
-    >
-      Add to Bag
-    </Button>
-  );
+  return <Button onClick={handleAdd}>Add to Bag</Button>;
 }

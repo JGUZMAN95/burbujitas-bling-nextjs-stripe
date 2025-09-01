@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Product } from "@/types/product";
+import { Product } from "@/types/product-type";
 import { getCookie, setCookie } from "@/utils/cookies";
 
 type Props = {
@@ -13,7 +13,7 @@ export default function FavoriteHeart({ product }: Props) {
 
   useEffect(() => {
     if (!product?._id) return;
-    const favArray: string[] = getCookie("favorites") || [];
+    const favArray: string[] = JSON.parse(getCookie("favorites") || "[]");
     setIsFavorite(favArray.includes(product._id));
   }, [product._id]);
 

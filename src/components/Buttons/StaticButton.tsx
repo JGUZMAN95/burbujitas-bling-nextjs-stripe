@@ -1,21 +1,32 @@
 "use client";
+import React from "react";
 
-type ButtonProps = {
+//TODO: import clsx from "clsx";
+// Cleaner conditional handling of classNames
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
-  onClick?: () => void;
-  className?: string; // for custom styling overrides
+  className?: string;
 };
 
-export default function Button({ children, onClick, className }: ButtonProps) {
+// Static button component with default styling and active state effects.
+const StaticButton: React.FC<ButtonProps> = ({
+  children,
+  className,
+  ...props
+}) => {
   return (
     <button
-      onClick={onClick}
-      className={`bg-softYellow text-sm font-extrabold py-2 px-3 w-full max-w-lg mx-auto  shadow-md 
+      type="button"
+      {...props}
+      className={`bg-softYellow text-sm font-extrabold py-2 px-3 w-full max-w-lg mx-auto shadow-md 
     active:translate-y-1 
     active:shadow-inner 
-    transition-all  ${className}`}
+    transition-all ${className || ""}`}
     >
       {children}
     </button>
   );
-}
+};
+
+export default StaticButton;

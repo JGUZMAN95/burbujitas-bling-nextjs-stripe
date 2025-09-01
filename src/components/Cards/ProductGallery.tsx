@@ -1,55 +1,61 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Zoom } from "swiper/modules";
-import { urlFor } from "@/lib/sanityClient";
+
+import Image from "next/image";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/zoom";
+import { urlFor } from "@/lib/sanity-client";
 
 type ProductGalleryProps = {
   images: any[];
-  className?: string; // allows passing width/height classes
-  imgContainerClassName?: string; // optional extra styling for image container
+  className?: string;
+  imgContainerClassName?: string;
+  productName?: string;
 };
 
 export default function ProductGallery({
   images,
   className = "w-full",
-  imgContainerClassName = "h-auto aspect-square",
+  imgContainerClassName = "h-full aspect-square",
+  productName,
 }: ProductGalleryProps) {
-  return (
-    <>
-      <Swiper
-        modules={[Pagination, Zoom]}
-        spaceBetween={0}
-        slidesPerView={1}
-        pagination={{ clickable: true }}
-        zoom={true}
-        className={`${className}`}
-      >
-        {images.map((image, index) => (
-          <SwiperSlide key={index}>
-            <div className={`overflow-hidden ${imgContainerClassName}`}>
-              <img
-                src={urlFor(image).width(500).height(500).url()}
-                alt={`Photo ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110 origin-bottom"
-              />
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+  const [enableZoom, setEnableZoom] = useState(true);
 
-      <style jsx global>{`
-        .swiper-pagination-bullet {
-          background-color: #fadadd;
-        }
-        .swiper-pagination-bullet-active {
-          background-color: #fadadd/60;
-        }
-      `}</style>
-    </>
+  useEffect(() => {
+    const checkSize = () => setEnableZoom(window.innerWidth > 768); // only zoom on tablets/desktop
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
+
+  return (
+    <Swiper
+      modules={[Pagination, Zoom]}
+      spaceBetween={0}
+      slidesPerView={1}
+      pagination={{ clickable: true }}
+      zoom={enableZoom}
+      className={`product-gallery-swiper ${className}`}
+    >
+      {images.map((image, index) => (
+        <SwiperSlide key={index}>
+          <div className={`overflow-hidden ${imgContainerClassName}`}>
+            <Image
+              src={urlFor(image).width(900).height(900).url()}
+              alt={`${productName}-${index + 1}`}
+              priority={index === 0}
+              width={900}
+              height={900}
+              className="w-full h-full object-cover transition-transform duration-500 ease-in-out hover:scale-110 bg-softWhite/50"
+            />
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
   );
 }

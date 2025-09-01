@@ -4,13 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Optional: Custom styles for sparkle accents or animations */
+/* Custom font */
 @font-face {
   font-family: "MyFont";
-  src: url("/fonts/Myfont-Regular.woff2") format("woff2");
+  src: url("/fonts/my-font-regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+}
+
+/* Only target bullets inside ProductGallery */
+.product-gallery-swiper .swiper-pagination-bullet {
+  background-color: #ebddcf; /* Default color */
+  width: 9px;
+  height: 9px;
+}
+
+.product-gallery-swiper .swiper-pagination-bullet-active {
+  background-color: #fff8f0; /* Active bullet color */
 }
 
 html,

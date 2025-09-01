@@ -8,9 +8,17 @@ interface ClickableImageProps {
   children: ReactNode; // allow passing the image or any JSX
 }
 
-export default function ClickableImage({ productType, productSlug, children,}:
-     ClickableImageProps) {
-        return (
-            <Link href={`/products/${productType}/${productSlug}`}>{children}</Link>
-        );
+export default function ClickableImage({
+  productType,
+  productSlug,
+  children,
+}: ClickableImageProps) {
+  return (
+    <Link
+      onClick={() => window.dispatchEvent(new Event("close-cart"))}
+      href={`/product/${productType}/${productSlug}`}
+    >
+      {children}
+    </Link>
+  );
 }

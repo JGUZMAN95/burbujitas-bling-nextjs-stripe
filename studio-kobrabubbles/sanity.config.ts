@@ -6,8 +6,8 @@ export default defineConfig({
   name: 'default',
   title: 'KobraBubbles',
 
-  projectId: 'wm8b2fha',
-  dataset: 'production',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
 
   plugins: [structureTool()],
 

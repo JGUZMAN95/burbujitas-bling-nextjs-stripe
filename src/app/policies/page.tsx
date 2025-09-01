@@ -1,13 +1,19 @@
+"use client";
+
 import Link from "next/link";
 import React from "react";
 
 export default function ShopPolicies() {
   return (
-    <main className="min-h-full flex items-center justify-center">
-      <div className="max-w-2xl mx-auto p-6 bg-softWhite/60 text-softBrown font-accent space-y-8 shadow-md">
-        <h1 className="text-3xl font-bold text-center">Shop Policies</h1>
+    <main className="min-h-screen flex items-start sm:items-center justify-center px-4 py-6 sm:py-12">
+      <div className="max-w-2xl w-full mx-auto p-4 sm:p-6 bg-softWhite/60 text-softBrown font-accent space-y-6 sm:space-y-8 shadow-md rounded-lg">
+        {/* Title */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-center">
+          Shop Policies
+        </h1>
 
-        <section className="space-y-3">
+        {/* Shipping & Processing */}
+        <section className="space-y-2 sm:space-y-3">
           <h2 className="text-lg font-semibold">Shipping & Processing</h2>
           <ul className="list-disc list-inside space-y-1">
             <li>Orders are usually processed within 2–5 business days.</li>
@@ -26,10 +32,11 @@ export default function ShopPolicies() {
           </ul>
         </section>
 
-        <section className="space-y-3">
+        {/* Returns & Exchanges */}
+        <section className="space-y-2 sm:space-y-3">
           <h2 className="text-lg font-semibold">Returns & Exchanges</h2>
           <ul className="list-disc list-inside space-y-1">
-            <li>All sales are final — no returns or exchanges</li>
+            <li>All sales are final — no returns or exchanges.</li>
             <li>
               Custom or personalized pieces are <strong>non-refundable</strong>,
               but we can offer store credit if we make a mistake.
@@ -37,7 +44,8 @@ export default function ShopPolicies() {
           </ul>
         </section>
 
-        <section className="space-y-3">
+        {/* Payments */}
+        <section className="space-y-2 sm:space-y-3">
           <h2 className="text-lg font-semibold">Payments</h2>
           <p>
             We accept credit/debit cards, Apple Pay, and Stripe. Payment is
@@ -45,7 +53,8 @@ export default function ShopPolicies() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        {/* Jewelry Care */}
+        <section className="space-y-2 sm:space-y-3">
           <h2 className="text-lg font-semibold">Jewelry Care</h2>
           <p>
             All jewelry is handmade and delicate – avoid water, chemicals, or
@@ -60,7 +69,8 @@ export default function ShopPolicies() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        {/* Customer Support */}
+        <section className="space-y-2 sm:space-y-3">
           <h2 className="text-lg font-semibold">Customer Support</h2>
           <p>
             Questions?{" "}
