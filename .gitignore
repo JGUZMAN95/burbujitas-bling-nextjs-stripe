@@ -43,3 +43,6 @@ public/videos/OwnerCrafting.mp4
 
 # Local Netlify folder
 .netlify
+
+# Ignore Sanity cleanup scripts
+studio-kobrabubbles/delete-orders.js
