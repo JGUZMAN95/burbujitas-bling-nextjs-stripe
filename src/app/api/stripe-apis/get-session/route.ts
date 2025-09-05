@@ -16,7 +16,13 @@ export async function POST(req: NextRequest) {
       );
 
     const session = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ["line_items.data.price.product"],
+      // Need to expand what info we will be intaking from Stripe.
+      expand: [
+        "line_items.data.price.product",
+        "customer",
+        "shipping",
+        "shipping_details",
+      ],
     });
 
     return NextResponse.json(session);

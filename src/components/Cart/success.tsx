@@ -19,6 +19,7 @@ type LineItem = {
     };
   };
 };
+
 // Simplified session data type.
 type SessionData = {
   line_items?: { data: LineItem[] };

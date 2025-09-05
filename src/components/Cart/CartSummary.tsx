@@ -50,10 +50,10 @@ export default function CartSummary() {
     const newCart = cartItems
       .map((item) =>
         item._id === _id
-          ? { ...item, stripeQuantity: (item.stripeQuantity || 1) + delta }
+          ? { ...item, quantity: (item.quantity || 1) + delta }
           : item
       )
-      .filter((item) => item.stripeQuantity! > 0);
+      .filter((item) => item.quantity! > 0);
 
     setCartItems(newCart);
     setCookie("cart", newCart, 3);
@@ -71,7 +71,7 @@ export default function CartSummary() {
   const subtotal = useMemo(
     () =>
       cartItems.reduce(
-        (acc, item) => acc + Number(item.price) * (item.stripeQuantity || 1),
+        (acc, item) => acc + Number(item.price) * (item.quantity || 1),
         0
       ),
     [cartItems]
@@ -143,9 +143,7 @@ export default function CartSummary() {
                   </div>
                   <div
                     className={`flex h-[2rem] px-3 gap-5 justify-center place-items-start items-center transition-fade-in duration-500 ${
-                      item.stripeQuantity === 1
-                        ? "bg-softCoral/20"
-                        : "bg-softPink/60"
+                      item.quantity === 1 ? "bg-softCoral/20" : "bg-softPink/60"
                     }`}
                   >
                     <button
@@ -154,7 +152,7 @@ export default function CartSummary() {
                     >
                       <span className="text-lg font-bold">−</span>
                     </button>
-                    {item.stripeQuantity}
+                    {item.quantity}
                     <button
                       aria-label={`Increase quantity of ${item.name}`}
                       onClick={() => updateQuantity(item._id, 1)}

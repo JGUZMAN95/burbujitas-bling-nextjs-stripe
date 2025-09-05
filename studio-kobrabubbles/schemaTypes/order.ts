@@ -31,5 +31,24 @@ export default {
     {name: 'estimatedDelivery', title: 'Estimated Delivery', type: 'string'},
     {name: 'createdAt', title: 'Created At', type: 'datetime'},
     {name: 'shippedAt', title: 'Shipped At', type: 'datetime'},
+    {
+      name: 'shipping',
+      type: 'object',
+      fields: [
+        {name: 'name', type: 'string'},
+        {
+          name: 'address',
+          type: 'object',
+          fields: [
+            {name: 'line1', type: 'string'},
+            {name: 'line2', type: 'string'},
+            {name: 'city', type: 'string'},
+            {name: 'state', type: 'string'},
+            {name: 'postalCode', type: 'string'},
+            {name: 'country', type: 'string'},
+          ],
+        },
+      ],
+    },
   ],
 }

@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 interface CheckoutItem {
   name: string;
   stripePriceId: string;
-  stripeQuantity?: number;
+  quantity?: number;
 }
 
 export async function POST(req: Request) {
@@ -22,11 +22,12 @@ export async function POST(req: Request) {
 
     const line_items = items.map((item) => {
       if (!item.stripePriceId) {
+        console.log("Server Error!!!!: " + item.name);
         throw new Error(`Missing price ID for item ${item.name}`);
       }
       return {
         price: item.stripePriceId,
-        quantity: item.stripeQuantity ?? 1,
+        quantity: item.quantity ?? 1,
       };
     });
 
@@ -35,11 +36,15 @@ export async function POST(req: Request) {
       mode: "payment",
       line_items,
       success_url: `${process.env.NEXT_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_BASE_URL}/cart`,
+      cancel_url: `${process.env.NEXT_BASE_URL}/`,
+      shipping_address_collection: {
+        allowed_countries: ["US"],
+      },
     });
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
+    console.log("Server Error!!!!: " + err.message);
     await logServerError({
       message: err.message,
       stack: err.stack,

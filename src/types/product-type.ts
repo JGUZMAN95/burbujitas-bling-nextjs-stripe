@@ -12,7 +12,6 @@ export type Product = {
   images: SanityImageObject[];
   stripePriceId?: string;
   stripeProductId?: string;
-  stripeQuantity?: number;
   category:
     | "rings"
     | "bracelets"

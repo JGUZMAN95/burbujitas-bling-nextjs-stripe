@@ -35,7 +35,6 @@ export const productBySlugQuery = `
     color,
     stripePriceId,
     stripeProductId,
-    stripeQuantity
   }`;
 
 export const ordersByOrderIDQuery = `

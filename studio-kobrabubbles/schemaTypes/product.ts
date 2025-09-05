@@ -13,6 +13,7 @@ export default defineType({
     {name: 'price', title: 'Price', type: 'number'},
     {name: 'length', title: 'Length', type: 'number'},
     {name: 'size', title: 'Weight', type: 'number'},
+    {name: 'color', title: 'Color', type: 'string'},
     {
       name: 'images',
       title: 'Images',
@@ -40,9 +41,33 @@ export default defineType({
         ],
       },
     },
-    {name: 'color', title: 'Color', type: 'string'},
     {name: 'stripePriceId', title: 'Stripe Price ID', type: 'string'},
     {name: 'stripeProductId', title: 'Stripe Product ID', type: 'string'},
-    {name: 'stripeQuantity', title: 'Stripe Quantity', type: 'number'},
+    {
+      name: 'lastSyncedAt',
+      title: 'Last Synced At',
+      type: 'datetime',
+      description: 'Tracks last sync with Stripe',
+    },
+    {
+      name: 'syncStatus',
+      title: 'Sync Status',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Pending', value: 'pending'},
+          {title: 'Synced', value: 'synced'},
+          {title: 'Failed', value: 'failed'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'pending',
+    },
+    {
+      name: 'syncError',
+      title: 'Sync Error',
+      type: 'text',
+      description: 'If sync failed, the error message will be stored here',
+    },
   ],
 })

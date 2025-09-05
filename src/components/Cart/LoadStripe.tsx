@@ -28,7 +28,7 @@ export default async function handleCheckout({
     }
     return {
       stripePriceId: item.stripePriceId,
-      stripeQuantity: item.stripeQuantity || 1,
+      stripeQuantity: item.quantity || 1,
     };
   });
 
