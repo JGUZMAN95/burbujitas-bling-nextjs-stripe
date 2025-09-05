@@ -41,12 +41,14 @@ type SessionData = {
 export default function OrderConfirmation() {
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
 
-  // Get session_id from URL query
+  // Getting session_id to update frontend order confirmation.
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get("session_id");
     if (!sessionId) return;
 
+    // TODO: Update to server component and use suspense intead of useEffect.
+    // Fetching URL after trigger from success is invoked.
     const fetchSession = async () => {
       try {
         const res = await fetch("/api/stripe-apis/get-session", {
@@ -55,6 +57,7 @@ export default function OrderConfirmation() {
           body: JSON.stringify({ session_id: sessionId }),
         });
         const data = await res.json();
+        console.log("Session Fetched " + data);
         setSessionData(data);
       } catch (err) {
         console.error("Failed to fetch session:", err);
@@ -71,15 +74,11 @@ export default function OrderConfirmation() {
       </div>
 
       <div className="w-full max-w-2xl">
-        <Suspense
-          fallback={<p className="text-center">Loading order details…</p>}
-        >
-          {sessionData ? (
-            <SuccessLine sessionData={sessionData} />
-          ) : (
-            <p className="text-center mt-4 sm:mt-0">Processing Transaction…</p>
-          )}
-        </Suspense>
+        {sessionData ? (
+          <SuccessLine sessionData={sessionData} />
+        ) : (
+          <p className="text-center mt-4 sm:mt-0">Loading order details…</p>
+        )}
       </div>
     </main>
   );

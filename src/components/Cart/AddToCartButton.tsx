@@ -20,14 +20,14 @@ export default function AddToCartButton({ product }: { product: Product }) {
     // Add or update product
     const index = cart.findIndex((item: any) => item._id === product._id);
     if (index !== -1) {
-      cart[index].stripeQuantity += 1;
+      cart[index].quantity += 1;
     } else {
       cart.push({
         _id: product._id,
         name: product.name,
         price: product.price,
         images: product.images ? [product.images[0]] : [],
-        stripeQuantity: 1, // could update to add more than one at a time later
+        quantity: 1, // could update to add more than one at a time later
         slug: product.slug,
         category: product.category,
         stripePriceId: product.stripePriceId,

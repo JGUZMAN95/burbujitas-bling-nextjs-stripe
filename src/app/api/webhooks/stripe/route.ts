@@ -32,72 +32,73 @@ export async function POST(req: NextRequest) {
   }
 
   const response = NextResponse.json({ received: true });
+  console.log("event recieved" + event.type);
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
+    console.log(
+      "checkout.session.completed" +
+        session.collected_information?.shipping_details?.address
+    );
 
-    (async () => {
-      try {
-        const sessionData = await stripe.checkout.sessions.retrieve(
-          session.id,
-          {
-            expand: ["line_items.data.price.product", "customer"],
-          }
-        );
+    const lineItems = session.line_items?.data.map((item: any) => {
+      const product = item.price.product as Stripe.Product;
+      return {
+        name: product.name,
+        image: product.images?.[0] || null,
+        quantity: item.quantity,
+        price: (item.price.unit_amount ?? 0) / 100,
+      };
+    });
 
-        const lineItems = sessionData.line_items?.data.map((item: any) => {
-          const product = item.price.product as Stripe.Product;
-          return {
-            name: product.name,
-            image: product.images?.[0] || null,
-            quantity: item.quantity,
-            price: (item.price.unit_amount ?? 0) / 100,
-          };
-        });
+    // Importing order info to Sanity.
+    const existingOrders = await serverSanityClient.fetch(
+      `*[_type == "order" && orderId == $orderId]{orderId}`,
+      { orderId: session.id }
+    );
 
-        const existingOrders = await serverSanityClient.fetch(
-          `*[_type == "order" && orderId == $orderId]{orderId}`,
-          { orderId: sessionData.id }
-        );
+    if (existingOrders.length === 0) {
+      await serverSanityClient.create({
+        _type: "order",
+        orderId: session.id,
+        customerName: session.customer_details?.name,
+        customerEmail: session.customer_details?.email,
+        lineItems,
+        total: (session.amount_total ?? 0) / 100,
+        shippingCost: (session.shipping_cost?.amount_total ?? 0) / 100,
+        shippingDetails: {
+          address: {
+            line1: session.customer_details?.address?.line1,
+            line2: session.customer_details?.address?.line2,
+            city: session.customer_details?.address?.city,
+            state: session.customer_details?.address?.state,
+            postalCode: session.customer_details?.address?.postal_code,
+            country: session.customer_details?.address?.country,
+          },
+        },
+        status: "placed",
+        createdAt: new Date().toISOString(),
+      });
+    }
 
-        if (existingOrders.length === 0) {
-          await serverSanityClient.create({
-            _type: "order",
-            orderId: sessionData.id,
-            customerName: sessionData.customer_details?.name,
-            customerEmail: sessionData.customer_details?.email,
-            lineItems,
-            total: (sessionData.amount_total ?? 0) / 100,
-            shippingCost: (sessionData.shipping_cost?.amount_total ?? 0) / 100,
-            status: "placed",
-            createdAt: new Date().toISOString(),
-          });
-        }
-
-        // Send email
-        try {
-          await resend.emails.send({
-            from: `Burbujitas & Bling <${process.env.EMAIL_FROM_ORDERS!}>`,
-            to: sessionData.customer_details?.email!,
-            subject: `Your Burbujitas & Bling Order is confirmed!`,
-            html: getOrderEmailHtml(sessionData),
-          });
-        } catch (err: any) {
-          await logServerError({
-            message: err.message,
-            stack: err.stack,
-            endpoint: "POST /api/webhooks/stripe (resend email)",
-          });
-        }
-      } catch (err: any) {
-        await logServerError({
-          message: err.message,
-          stack: err.stack,
-          endpoint: "POST /api/webhooks/stripe (process session)",
-        });
-      }
-    })();
+    // Sending order confirmation email.
+    try {
+      await resend.emails.send({
+        from: `Burbujitas & Bling <${process.env.EMAIL_FROM_ORDERS!}>`,
+        to: session.customer_details?.email!,
+        //to: "delivered@resend.dev",
+        subject: `Your Burbujitas & Bling Order is confirmed!`,
+        html: getOrderEmailHtml(session),
+      });
+      console.log("ℹ️ Email Sent:", "delivered@resend.dev");
+    } catch (err: any) {
+      console.log("ℹ️ Ignoring event:", event.type);
+      await logServerError({
+        message: err.message,
+        stack: err.stack,
+        endpoint: "POST /api/webhooks/stripe (resend email)",
+      });
+    }
   }
-
   return response;
 }

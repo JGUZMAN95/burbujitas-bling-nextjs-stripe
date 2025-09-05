@@ -1,24 +1,28 @@
 "use client";
 
 import Button from "@/components/Buttons/StaticButton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function ContactUs() {
   const [status, setStatus] = useState<null | {
     type: "success" | "error";
     message: string;
   }>(null);
-
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (status) {
       setVisible(true);
-      const timer = setTimeout(() => {
+
+      // Clear any existing timer before setting a new one
+      if (timerRef.current) clearTimeout(timerRef.current);
+
+      timerRef.current = setTimeout(() => {
         setVisible(false);
-      }, 2500); // fades out after 2.5s
-      return () => clearTimeout(timer);
+        timerRef.current = null;
+      }, 2500);
     }
   }, [status]);
 
@@ -42,14 +46,13 @@ export default function ContactUs() {
       if (response.ok) {
         setStatus({
           type: "success",
-          message: result.message || "Your note is on its way to us.",
+          message: result.message || "Your message has been sent!",
         });
         formElement.reset();
       } else {
         setStatus({
           type: "error",
-          message:
-            result.message || "Oops! Something went wrong, please try again.",
+          message: result.message || "Oops! Something went wrong.",
         });
       }
     } catch (error) {
@@ -118,7 +121,7 @@ export default function ContactUs() {
             <div
               role="status"
               aria-live="polite"
-              className={`col-span-1 md:col-span-2 mt-2 text-center rounded p-2 transition-all duration-700 ${
+              className={`col-span-1 md:col-span-2 mt-2 text-center rounded p-2 transition-all duration-500 ${
                 visible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 -translate-y-2"
