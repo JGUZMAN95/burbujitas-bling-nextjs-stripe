@@ -25,8 +25,7 @@ export async function POST(req: Request) {
     // Send email via Resend
     const resendResponse = await resend.emails.send({
       from: `Burbujitas & Bling <${process.env.EMAIL_FROM_SUPPORT!}>`,
-      //TODO: Update to my email
-      to: `delivered@resend.dev`,
+      to: email,
       subject: `New Contact Form Submission from ${name || "Anonymous"}`,
       text: message,
     });

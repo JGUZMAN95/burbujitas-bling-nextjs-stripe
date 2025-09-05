@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
         try {
           await resend.emails.send({
             from: `Burbujitas & Bling <${process.env.EMAIL_FROM_ORDERS!}>`,
-            to: `delivered@resend.dev`,
+            to: sessionData.customer_details?.email!,
             subject: `Your Burbujitas & Bling Order is confirmed!`,
             html: getOrderEmailHtml(sessionData),
           });
