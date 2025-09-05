@@ -19,31 +19,37 @@ A modern e-commerce site showcasing handmade rings, bracelets, anklets, and neck
 ## 🗺️ Project Roadmap & Development Steps
 
 ### 1. Setup & Configuration
+
 - Initialize Next.js app with TypeScript
 - Connect to Sanity CMS for content management
 - Configure environment variables securely (`.env.local`)
 - Create reusable Sanity client (`lib/sanity/client.ts`)
 
 ### 2. Data Modeling & Schemas
+
 - Define product schema in Sanity (`sanity/schemaTypes/product.ts`)
 - Include fields for product name, price, description, images, slug, and metadata
 
 ### 3. Product Listing Page
+
 - Fetch products from Sanity using GROQ queries
 - Display product cards in a responsive grid (`src/components/ProductCard.tsx`)
 - Implement product types and props for type safety
 
 ### 4. Product Detail Page with Dynamic Routing
+
 - Create dynamic route `/products/[id].tsx`
 - Use `getStaticPaths` and `getStaticProps` to generate pages for each product
 - Show full product details including large image, description, price, and related info
 
 ### 5. Styling & UI Enhancements
+
 - Use Tailwind CSS for styling and layout
 - Ensure accessibility and responsive design
 - Add hover states and interactive elements on product cards
 
 ### 6. Deployment
+
 - Setup Netlify for deployment
 - Configure environment variables on Netlify dashboard
 - Use `.gitignore` to keep credentials safe locally
@@ -94,3 +100,4 @@ Styled with Tailwind CSS
 Deployed on Netlify
 
 Thank you for checking out Burbujitas & Bling! 🌟
+```

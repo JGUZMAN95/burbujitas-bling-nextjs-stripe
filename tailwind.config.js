@@ -1,10 +1,9 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './src/pages/**/*.{js,ts,jsx,tsx}',
-    './src/components/**/*.{js,ts,jsx,tsx}',
-    './src/app/**/*.{js,ts,jsx,tsx}'
-  ],
+
+// Tailwind CSS configuration file
+// specifying content paths, theme extensions, and plugins.
+export default {
+  content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -16,23 +15,25 @@ module.exports = {
         darkBrown: "#68513dff",
         softBrown: "#bb936eff",
         charcol: "#3B3B3B",
-        green:"#a6ba5c"
+        green: "#a6ba5c",
       },
       fontSize: {
         xs: "12px",
         sm: "14px",
-        md: "16px",
-        base: "28px",
-        lg: "36px",
-        xl: "48px",
+        base: "16px", // default body text
+        md: "20px", // subheadings
+        lg: "28px", // section headers
+        xl: "36px", // hero text
+        "2xl": "48px", // big hero / landing
       },
       fontFamily: {
-        heading: ['Poppins', 'sans-serif'],
-        body: ['Averia Serif Libre', 'serif'],
-        accent: ['MyFont', 'sans-serif'],
-        caption: ['Playfair Display', 'serif'],
+        heading: ["Poppins", "sans-serif"],
+        body: ["Averia Serif Libre", "serif"],
+        accent: ["MyFont", "sans-serif"],
+        caption: ["Playfair Display", "serif"],
       },
     },
   },
-  plugins: [require('tailwind-hamburgers')],
+  plugins: [require("tailwind-hamburgers")],
+  safelist: [{ pattern: /(fill|stroke|text)-softBrown/ }],
 };
