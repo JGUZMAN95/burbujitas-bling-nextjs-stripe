@@ -25,7 +25,7 @@ export default function Header() {
   const [cartItems, updateCartItems] = useState<
     {
       _id: string;
-      stripeQuantity: number;
+      quantity: number;
       name?: string;
       image?: string;
       price?: number;
@@ -52,10 +52,7 @@ export default function Header() {
     return () => window.removeEventListener("close-cart", closeHandler);
   }, []);
 
-  const cartQuantity = cartItems.reduce(
-    (acc, item) => acc + item.stripeQuantity,
-    0
-  );
+  const cartQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <header className="relative font-accent">
