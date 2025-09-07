@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Zoom } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 
 import Image from "next/image";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/zoom";
+import "swiper/css/navigation";
 import { urlFor } from "@/lib/sanity-client";
 
+// TODO: Add zoomable images for customers.
 type ProductGalleryProps = {
   images: any[];
   className?: string;
@@ -35,11 +36,11 @@ export default function ProductGallery({
 
   return (
     <Swiper
-      modules={[Pagination, Zoom]}
+      modules={[Pagination, Navigation]}
       spaceBetween={0}
       slidesPerView={1}
       pagination={{ clickable: true }}
-      zoom={enableZoom}
+      navigation
       className={`product-gallery-swiper ${className}`}
     >
       {images.map((image, index) => (
