@@ -3,6 +3,7 @@
 //TODO: Validate cart items before sending to backend.
 //TODO: add toast notifications for better UX.
 
+import { logServerError } from "@/lib/log-server-error";
 import { Product } from "@/types/product-type";
 
 // This function initiates the Stripe checkout process.
@@ -47,8 +48,12 @@ export default async function handleCheckout({
       onStatus?.("Failed to start checkout session");
       console.error("Stripe session URL missing or invalid:", data);
     }
-  } catch (err) {
-    console.error("Checkout error:", err);
+  } catch (err: any) {
+    await logServerError({
+      message: err.message,
+      stack: err.stack,
+      endpoint: "Frontend /app/LoadStripe",
+    });
     onStatus?.("Checkout error, see console");
   }
 }

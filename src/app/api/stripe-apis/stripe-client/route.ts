@@ -22,7 +22,6 @@ export async function POST(req: Request) {
 
     const line_items = items.map((item) => {
       if (!item.stripePriceId) {
-        console.log("Server Error!!!!: " + item.name);
         throw new Error(`Missing price ID for item ${item.name}`);
       }
       return {
@@ -44,7 +43,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    console.log("Server Error!!!!: " + err.message);
     await logServerError({
       message: err.message,
       stack: err.stack,

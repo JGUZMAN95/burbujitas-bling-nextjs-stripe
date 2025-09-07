@@ -16,11 +16,9 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("Contact form submission:", { name, email, message });
-
     await resend.emails.send({
       from: `Burbujitas & Bling <${process.env.EMAIL_FROM_SUPPORT!}>`,
-      to: process.env.EMAIL_TO!, // send to your email
+      to: process.env.EMAIL_TO!,
       //to: "delivered@resend.dev",
       subject: `New Contact Form Submission from ${name || "Anonymous"}`,
       text: `Name: ${name || "Anonymous"}\nEmail: ${email}\nMessage: ${message}`,
@@ -31,7 +29,6 @@ export async function POST(req: Request) {
       { status: 200 }
     );
   } catch (err: any) {
-    console.error("Contact form error:", err);
     await logServerError({
       message: err.message,
       stack: err.stack,

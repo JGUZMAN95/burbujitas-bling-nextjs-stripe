@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/Buttons/StaticButton";
+import { logServerError } from "@/lib/log-server-error";
 import { useState, useEffect, useRef } from "react";
 
 export default function ContactUs() {
@@ -55,8 +56,12 @@ export default function ContactUs() {
           message: result.message || "Oops! Something went wrong.",
         });
       }
-    } catch (error) {
-      console.error("Error submitting contact form:", error);
+    } catch (error: any) {
+      await logServerError({
+        message: error.message,
+        stack: error.stack,
+        endpoint: "POST /api/contact-us",
+      });
       setStatus({
         type: "error",
         message: "An error occurred. Please try again later.",

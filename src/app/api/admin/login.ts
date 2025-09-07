@@ -6,7 +6,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const { password } = req.body;
 
-  if (password === process.env.ADMIN_PASSWORD) {
+  if (password === process.env.ADMIN_SECRET_PASSWORD) {
     // ✅ password matches
     res.setHeader(
       "Set-Cookie",

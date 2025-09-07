@@ -41,6 +41,7 @@ export default function ProductGallery({
       slidesPerView={1}
       pagination={{ clickable: true }}
       navigation
+      loop
       className={`product-gallery-swiper ${className}`}
     >
       {images.map((image, index) => (

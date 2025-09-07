@@ -9,6 +9,7 @@ import { getCookie, setCookie } from "@/utils/cookies";
 import Link from "next/link";
 import { Product } from "@/types/product-type";
 import handleCheckout from "@/components/Cart/LoadStripe";
+import { logServerError } from "@/lib/log-server-error";
 
 //TODO:
 // Split into components:

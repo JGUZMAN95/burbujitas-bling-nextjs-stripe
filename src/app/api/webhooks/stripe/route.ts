@@ -32,14 +32,9 @@ export async function POST(req: NextRequest) {
   }
 
   const response = NextResponse.json({ received: true });
-  console.log("event recieved" + event.type);
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
-    console.log(
-      "checkout.session.completed" +
-        session.collected_information?.shipping_details?.address
-    );
 
     const lineItems = session.line_items?.data.map((item: any) => {
       const product = item.price.product as Stripe.Product;
@@ -90,9 +85,15 @@ export async function POST(req: NextRequest) {
         subject: `Your Burbujitas & Bling Order is confirmed!`,
         html: getOrderEmailHtml(session),
       });
-      console.log("ℹ️ Email Sent:", "delivered@resend.dev");
+
+      await resend.emails.send({
+        from: `Burbujitas & Bling <${process.env.EMAIL_FROM_ORDERS!}>`,
+        to: process.env.EMAIL_TO!,
+        //to: "delivered@resend.dev",
+        subject: `Your Burbujitas & Bling Order is confirmed!`,
+        html: getOrderEmailHtml(session),
+      });
     } catch (err: any) {
-      console.log("ℹ️ Ignoring event:", event.type);
       await logServerError({
         message: err.message,
         stack: err.stack,

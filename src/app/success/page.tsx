@@ -3,6 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import CartCleanUp from "@/components/Cart/CartCleanUp";
 import SuccessLine from "@/components/Cart/success";
+import { logServerError } from "@/lib/log-server-error";
 
 type LineItem = {
   id: string;
@@ -57,10 +58,13 @@ export default function OrderConfirmation() {
           body: JSON.stringify({ session_id: sessionId }),
         });
         const data = await res.json();
-        console.log("Session Fetched " + data);
         setSessionData(data);
-      } catch (err) {
-        console.error("Failed to fetch session:", err);
+      } catch (err: any) {
+        await logServerError({
+          message: err.message,
+          stack: err.stack,
+          endpoint: "POST /app/success/page.tsx",
+        });
       }
     };
 
