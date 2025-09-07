@@ -1,59 +1,79 @@
-# Burbujitas & Bling
+## Burbujitas & Bling ✨
 
-A modern e-commerce site showcasing handmade rings, bracelets, anklets, and necklaces — built with Next.js, Sanity CMS, Tailwind CSS, and deployed on Netlify.
+A modern e-commerce site showcasing handmade rings, bracelets, anklets, and necklaces — built with Next.js, Sanity CMS, Tailwind CSS, and Stripe, and deployed on Netlify.
 
----
+Burbujitas & Bling is a playful, bilingual jewelry store website focused on handmade and personalized pieces.
 
-## 🚀 Project Overview
+## 🚀 Features
 
-**Burbujitas & Bling** is a playful, bilingual jewelry store website focused on handmade and personalized pieces. This project aims to:
+🛍️ Dynamic product pages powered by Sanity CMS
 
-- Showcase products with rich images and detailed descriptions
-- Provide a smooth, responsive user experience on desktop and mobile
-- Enable dynamic product detail pages using Sanity CMS content
-- Integrate secure environment variables for credentials
-- Deploy reliably on Netlify with seamless local development
+💳 Secure checkout with Stripe
 
----
+🍪 Cookie-based shopping cart (add, remove, update)
 
-## 🗺️ Project Roadmap & Development Steps
+🎠 Product galleries with Swiper.js
 
-### 1. Setup & Configuration
+🔑 Admin login for quick product management
 
-- Initialize Next.js app with TypeScript
-- Connect to Sanity CMS for content management
-- Configure environment variables securely (`.env.local`)
-- Create reusable Sanity client (`lib/sanity/client.ts`)
+## 🛠️ Tech Stack
 
-### 2. Data Modeling & Schemas
+Frontend: Next.js (TypeScript), Tailwind CSS
 
-- Define product schema in Sanity (`sanity/schemaTypes/product.ts`)
-- Include fields for product name, price, description, images, slug, and metadata
+CMS: Sanity
 
-### 3. Product Listing Page
+Payments: Stripe
 
-- Fetch products from Sanity using GROQ queries
-- Display product cards in a responsive grid (`src/components/ProductCard.tsx`)
-- Implement product types and props for type safety
+Hosting: Netlify
 
-### 4. Product Detail Page with Dynamic Routing
+## 📦 Project Goals
 
-- Create dynamic route `/products/[id].tsx`
-- Use `getStaticPaths` and `getStaticProps` to generate pages for each product
-- Show full product details including large image, description, price, and related info
+This project was built both as:
 
-### 5. Styling & UI Enhancements
+A real jewelry storefront for Burbujitas & Bling
 
-- Use Tailwind CSS for styling and layout
-- Ensure accessibility and responsive design
-- Add hover states and interactive elements on product cards
+A developer portfolio piece showcasing full-stack skills in modern web development
 
-### 6. Deployment
+## 🗺️ Roadmap
+## 1. Setup & Configuration
 
-- Setup Netlify for deployment
-- Configure environment variables on Netlify dashboard
-- Use `.gitignore` to keep credentials safe locally
-- Deploy and test live site thoroughly
+Initialize Next.js app with TypeScript
+
+Connect to Sanity CMS
+
+Configure environment variables securely
+
+Create reusable Sanity client
+
+## 2. Data Modeling
+
+Define product schema in Sanity (product.ts)
+
+Include fields for name, price, description, images, slug, metadata
+
+## 3. Product Pages
+
+Responsive product grid with cards
+
+Dynamic routes for product detail pages
+
+Fetch content via GROQ queries
+
+## 4. Styling & UI Enhancements
+
+Tailwind CSS for layout and accessibility
+
+Hover states + interactive elements
+
+Swiper.js galleries
+
+## 5. Deployment
+
+Deploy to Netlify with environment variables
+
+Configure CI/CD
+
+Test live site thoroughly
 
 ---
 
@@ -62,33 +82,145 @@ A modern e-commerce site showcasing handmade rings, bracelets, anklets, and neck
 Add a `.env.local` file to your project root with:
 
 ```bash
-NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
-NEXT_PUBLIC_SANITY_DATASET=production
-NEXT_PUBLIC_SANITY_API_VERSION=2024-01-01
+ADMIN_SECRET_PASSWORD=
+
+EMAIL_FROM_ORDERS=
+EMAIL_FROM_SUPPORT=
+EMAIL_TO=
+RESEND_API_KEY=
+NEXT_BASE_URL=
+
+NEXT_PUBLIC_SANITY_API_VERSION=
+NEXT_PUBLIC_SANITY_DATASET=
+NEXT_PUBLIC_SANITY_PROJECT_ID=
+SANITY_SECRET_WRITE=
+
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
 
 📂 Project Structure Overview
 .
-├── lib/
-│   └── sanity/
-│       ├── client.ts       # Sanity client configuration
-│       ├── config.ts       # Sanity client constants
-│       └── queries.ts      # GROQ queries
-├── sanity/
-│   ├── schemaTypes/
-│   │   └── product.ts      # Sanity schema for products
-│   └── sanity.config.ts    # Sanity Studio configuration
-├── src/
-│   ├── components/
-│   │   └── ProductCard.tsx # Product card UI component
-│   ├── pages/
-│   │   ├── index.tsx       # Product listing page
-│   │   └── products/
-│   │       └── [id].tsx    # Product detail dynamic route
-│   └── styles/             # Tailwind CSS styles
-├── .env.local              # Environment variables (not committed)
-├── next.config.js          # Next.js config
+├── next-env.d.ts
+├── next.config.js
+├── package-lock.json
 ├── package.json
-└── README.md
+├── postcss.config.js
+├── PROJECT_STRUCTURE.md
+├── public
+│   ├── favicon.ico
+│   ├── fonts
+│   │   └── my-font-regular.woff2
+│   └── images
+│       ├── body
+│       │   ├── coming-soon.png
+│       │   └── Owner.png
+│       ├── care-tips
+│       │   ├── perfume.png
+│       │   ├── scrub.png
+│       │   ├── sleep.png
+│       │   ├── storage.png
+│       │   └── swimming.png
+│       ├── fallbacks
+│       │   └── placeholder.png
+│       ├── icons
+│       │   ├── empty-bag.png
+│       │   ├── instagram 2.svg
+│       │   ├── instagram.svg
+│       │   ├── linktree.svg
+│       │   ├── shopping-bag.png
+│       │   ├── tiktok.svg
+│       │   └── trash-bin.png
+│       └── logos
+│           ├── logo-blue.png
+│           ├── logo-multi.png
+│           ├── logo-pink.png
+│           ├── logo-white.png
+│           ├── logo.png
+│           ├── logo1.png
+│           ├── logo2.png
+│           └── logo3.png
+├── README.md
+├── src
+│   ├── app
+│   │   ├── about-us
+│   │   │   └── page.jsx
+│   │   ├── admin
+│   │   │   └── login
+│   │   ├── api
+│   │   │   ├── admin
+│   │   │   ├── contact-us
+│   │   │   ├── stripe-apis
+│   │   │   └── webhooks
+│   │   ├── care-tips
+│   │   │   └── page.tsx
+│   │   ├── checkout
+│   │   │   └── page.tsx
+│   │   ├── contact-us
+│   │   │   └── page.tsx
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── policies
+│   │   │   └── page.tsx
+│   │   ├── product
+│   │   │   └── [category]
+│   │   └── success
+│   │       └── page.tsx
+│   ├── components
+│   │   ├── Body
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Header.tsx
+│   │   │   └── ImageComponent.tsx
+│   │   ├── Buttons
+│   │   │   ├── ClickableImage.tsx
+│   │   │   ├── FavoriteHeart.tsx
+│   │   │   ├── Heart.tsx
+│   │   │   └── StaticButton.tsx
+│   │   ├── Cards
+│   │   │   ├── DynamicProductCard.tsx
+│   │   │   ├── OverviewProductCard.tsx
+│   │   │   └── ProductGallery.tsx
+│   │   ├── Cart
+│   │   │   ├── AddToCartButton.tsx
+│   │   │   ├── CartCleanUp.ts
+│   │   │   ├── CartSummary.tsx
+│   │   │   ├── LoadStripe.tsx
+│   │   │   └── success.tsx
+│   │   └── FavoritesContext.tsx
+│   ├── constants
+│   │   └── nav-links.ts
+│   ├── lib
+│   │   ├── log-server-error.ts
+│   │   ├── sanity-client.ts
+│   │   └── stripe.ts
+│   ├── styles
+│   │   └── globals.css
+│   ├── types
+│   │   ├── flatten-queries.ts
+│   │   ├── order-type.ts
+│   │   └── product-type.ts
+│   └── utils
+│       ├── cookies.ts
+│       └── orderEmailTemplate.ts
+├── structure.txt
+├── studio-kobrabubbles
+│   ├── delete-orders.js
+│   ├── eslint.config.mjs
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── README.md
+│   ├── sanity.cli.ts
+│   ├── sanity.config.ts
+│   ├── schemaTypes
+│   │   ├── index.ts
+│   │   ├── order.ts
+│   │   ├── product.ts
+│   │   └── server-logs.ts
+│   ├── static
+│   └── tsconfig.json
+├── tailwind.config.js
+└── tsconfig.json
+
+39 directories, 81 files
 
 🎉 Acknowledgments
 Built with Next.js
