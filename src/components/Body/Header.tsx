@@ -92,9 +92,10 @@ export default function Header() {
           <Image
             src="/images/icons/shopping-bag.png"
             alt="Cart"
-            width={30}
-            height={30}
+            width={40}
+            height={40}
             priority={true}
+            className="md:w-60 md:h-60"
           />
           {cartQuantity > 0 && (
             <span className="absolute -top-2 -right-2 flex items-center justify-center text-md font-bold text-softBrown">
@@ -135,8 +136,8 @@ export default function Header() {
             <Image
               src="/images/icons/shopping-bag.png"
               alt="Cart"
-              width={30}
-              height={30}
+              width={50}
+              height={50}
               priority={true}
             />
             {cartQuantity > 0 && (
@@ -191,6 +192,15 @@ export default function Header() {
           ×
         </button>
         <nav className="flex flex-col p-6 space-y-4">
+          <div className="flex justify-center items-center mt-6">
+            <Image
+              src="/images/icons/favicon.png"
+              height={50}
+              width={50}
+              alt="logo"
+            />
+          </div>
+
           {menuNavLinks.map((link) => (
             <Link
               key={link.path}

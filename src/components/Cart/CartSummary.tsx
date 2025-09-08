@@ -80,13 +80,12 @@ export default function CartSummary() {
 
   if (!cartItems.length)
     return (
-      <div className="justify-center items-start text-center gap-4 h-full p-2">
+      <div className="text-center place-items-center gap-4 py-10 p-2">
         <Image
-          src="/images/icons/empty-bag.png"
+          src="/images/icons/shopping-bag.png"
           alt="Burbujitas & Bling"
-          width={200}
-          height={300}
-          className="items-center mx-auto"
+          width={100}
+          height={100}
         />
         <p>
           Opsies... <br />

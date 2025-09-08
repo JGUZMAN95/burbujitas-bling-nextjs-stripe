@@ -2,6 +2,7 @@ import { Product } from "@/types/product-type";
 import OverviewProductCard from "@/components/Cards/OverviewProductCard";
 import { allProductsQuery } from "../types/flatten-queries";
 import { client } from "../lib/sanity-client";
+import Image from "next/image";
 
 export default async function HomePage() {
   const products: Product[] = await client.fetch(allProductsQuery);
@@ -22,6 +23,13 @@ export default async function HomePage() {
 
   return (
     <main className="grid font-body text-md text-darkBrown place-items-center">
+      <Image
+        src="/images/body/sale.png"
+        width={800}
+        height={800}
+        alt="sale"
+        className="w-full"
+      />
       {ProductGrid(products)}
       {/*Todo: Add sections for Featured Products and Best Sellers*/}
     </main>
