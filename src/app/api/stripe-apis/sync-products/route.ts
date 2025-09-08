@@ -6,7 +6,7 @@ import { Product } from "@/types/product-type";
 import { allProductsQuery } from "@/types/flatten-queries";
 import { logServerError } from "@/lib/log-server-error";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_LIVE_KEY!, {
   apiVersion: "2025-08-27.basil",
 });
 
@@ -56,6 +56,8 @@ export async function POST(req: NextRequest) {
 
           return { name: product.name, id: product._id };
         } catch (err: any) {
+          console.log("ERROR: ", err);
+
           await logServerError({
             message: err.message,
             stack: err.stack,
@@ -69,6 +71,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ synced: synced.filter(Boolean) });
   } catch (err: any) {
+    console.log("ERROR: ", err);
+
     await logServerError({
       message: err.message,
       stack: err.stack,

@@ -41,12 +41,18 @@ type SessionData = {
 
 export default function OrderConfirmation() {
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Getting session_id to update frontend order confirmation.
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-    if (!sessionId) return;
+    const sessionId = new URLSearchParams(window.location.search).get(
+      "session_id"
+    );
+    if (!sessionId) {
+      setLoading(false);
+      return;
+    }
 
     // TODO: Update to server component and use suspense intead of useEffect.
     // Fetching URL after trigger from success is invoked.
@@ -57,14 +63,22 @@ export default function OrderConfirmation() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ session_id: sessionId }),
         });
-        const data = await res.json();
+        if (!res.ok) throw new Error(`Failed to fetch session: ${res.status}`);
+
+        const data: SessionData = await res.json();
+
         setSessionData(data);
+        console.log("Fetched session data HERE:", data);
       } catch (err: any) {
+        console.error("OrderConfirmation Error:", err);
+        setError("Unable to load order details. Please contact support.");
         await logServerError({
           message: err.message,
           stack: err.stack,
           endpoint: "POST /app/success/page.tsx",
         });
+      } finally {
+        setLoading(false);
       }
     };
 

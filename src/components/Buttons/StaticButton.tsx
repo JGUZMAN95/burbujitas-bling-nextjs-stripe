@@ -18,8 +18,7 @@ const StaticButton: React.FC<ButtonProps> = ({
   return (
     <button
       {...props}
-      className={`bg-softYellow text-sm font-extrabold py-2 px-3 w-full max-w-lg mx-auto shadow-md 
-    active:translate-y-1 
+      className={`text-sm font-extrabold py-2 px-3 w-full max-w-lg mx-auto shadow-lg 
     active:shadow-inner 
     transition-all ${className || ""}`}
     >

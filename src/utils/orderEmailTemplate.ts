@@ -3,130 +3,205 @@
 // Generate HTML for order confirmation email.
 export function getOrderEmailHtml(sessionData: any) {
   const lineItems = sessionData.line_items?.data || [];
+  const formatAmount = (amount?: number) =>
+    `$${((amount ?? 0) / 100).toFixed(2)}`;
 
   // Generate HTML for each line item.
+
   const itemsHtml = lineItems
     .map((item: any) => {
       const product = item.price.product;
       return `
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #bb936eff; padding:8px; gap:8px; color:#bb936eff;">
-        <div style="flex-shrink:0; width:50px; height:50px; overflow:hidden; border-radius:4px;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" solid #bb936eff; margin-bottom:8px;">
+      <tr>
+        <td width="50" style="padding:4px; vertical-align:top;">
           ${
             item.price.product.images?.[0]
-              ? `<img src="${item.price.product.images[0]}" width="50" height="50" style="object-fit:cover; display:block;" />`
+              ? `<img src="${item.price.product.images[0]}" width="80" height="80" style="display:block; object-fit:cover; border-radius:4px;" />`
               : ""
           }
-        </div>
-        <div style="flex:1; text-align:left;">
-          <p style="font-weight:bold; margin:0;">${product.name}</p>
+        </td>
+        <td style="padding:4px; text-align:left; font-family:'Averia Serif Libre', serif; color:#bb936eff;">
+          <p style="margin:0; font-weight:bold;">${product.name}</p>
           <p style="margin:0;">Quantity: ${item.quantity}</p>
-        </div>
-        <div style="text-align:right; font-weight:bold;">
+        </td>
+        <td style="padding:4px; text-align:right; font-weight:bold; font-family:'Averia Serif Libre', serif; color:#bb936eff;">
           $${(item.price.unit_amount ?? 0) / 100}
-        </div>
-      </div>`;
+        </td>
+      </tr>
+    </table>
+    `;
     })
     .join("");
 
   const trackingHtml = sessionData.trackingUrl
     ? `
-      <div style="margin:16px 0; text-align:center; background-color:#fadadd; padding:8px; border-radius:4px; color:#bb936eff;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:16px 0; background-color:#fadadd;">
+    <tr>
+      <td align="center" style="padding:12px; font-family:'Averia Serif Libre', serif; color:#bb936eff;">
         <p style="font-weight:bold; margin:0;">Your order has been shipped!</p>
         ${sessionData.carrier ? `<p style="margin:4px 0 0 0;">Carrier: ${sessionData.carrier}</p>` : ""}
         <p style="margin:4px 0 0 0;">
-          Track your package here:
-          <a href="${sessionData.trackingUrl}" target="_blank" style="color:#FADADD; text-decoration:underline;">Track Order</a>
+          Track your package here: 
+          <a href="${sessionData.trackingUrl}" target="_blank" style="color:#bb936eff; text-decoration:underline;">Track Order</a>
         </p>
-      </div>`
+      </td>
+    </tr>
+  </table>`
     : "";
 
   const headerHtml = `
-  <div style="background-color:#fadadd; text-align:center; font-family:'Averia Serif Libre', serif; padding:12px 0; border-bottom:1px solid #bb936eff; margin:0;">
-    <p style="margin:0; font-size:14px; color:#bb936eff;">Free Shipping on Domestic Orders $35+</p>
-    <div style="margin-top:8px;">
-      <a href="https://burbujitasybling.store" target="_blank">
-        <img src="https://burbujitasybling.store/images/logos/logo-pink.png" 
-             alt="Burbujitas & Bling" 
-             style="width:200px; height:auto; display:block; margin:0 auto;" />
-      </a>
-    </div>
-  </div>`;
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td align="center" style="font-family:'Averia Serif Libre', serif; padding:12px 0 0 0;  #bb936eff;">
+      
+      <!-- Free Shipping Text -->
+      <p style="margin:0; font-size:14px; color:#bb936eff;">Free Shipping on Domestic Orders $35+</p>
+
+      <!-- Logo -->
+      <table cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;">
+        <tr>
+          <td>
+            <a href="https://burbujitasybling.store" target="_blank">
+              <img src="https://burbujitasybling.store/images/logos/logo-pink.png" 
+                   alt="Burbujitas & Bling" 
+                   style="width:300px; height:auto; display:block; margin:0 auto;" />
+            </a>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>`;
 
   const footerHtml = `
-  <div style="background-color:#ffffff; text-align:center; font-family:'Averia Serif Libre', serif; color:#9DBDD9; padding:16px 0 0 0; margin:0;">
-    <img src="https://burbujitasybling.store/images/logos/logo-blue.png" 
-         alt="Burbujitas & Bling" 
-         style="width:200px; height:auto; display:block; margin:0 auto 8px auto;" />
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFF8F0">
+  <tr>
+    <td align="center" style="font-family:'Averia Serif Libre', serif; color:#9DBDD9; padding:16px 0 0 0;">
+      
+      <!-- Logo -->
+      <img src="https://burbujitasybling.store/images/logos/logo-blue.png" 
+           alt="Burbujitas & Bling" 
+           style="width:150px; height:auto; display:block; margin:0 auto 8px auto;" />
 
-    <div style="margin-bottom:8px;">
-      <a href="https://linktr.ee/burbujitasYbling" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">
-        <img src="https://burbujitasybling.store/images/body/linktree.png" alt="Linktree" />
-      </a>
-      <a href="https://www.tiktok.com/@burbujitasybling" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">
-        <img src="https://burbujitasybling.store/images/body/tiktok.png" alt="TikTok" />
-      </a>
-      <a href="https://www.instagram.com/burbujitasybling" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">
-        <img src="https://burbujitasybling.store/images/body/instagram.png" alt="Instagram" />
-      </a>
-    </div>
+      <!-- Social Icons -->
+      <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;">
+        <tr>
+          <td style="padding:0 4px;">
+            <a href="https://linktr.ee/burbujitasYbling" style="text-decoration:none;">
+              <img src="https://burbujitasybling.store/images/icon/linktree.png" alt="Linktree" style="display:block;" />
+            </a>
+          </td>
+          <td style="padding:0 4px;">
+            <a href="https://www.tiktok.com/@burbujitasybling" style="text-decoration:none;">
+              <img src="https://burbujitasybling.store/images/icon/tiktok.png" alt="TikTok" style="display:block;" />
+            </a>
+          </td>
+          <td style="padding:0 4px;">
+            <a href="https://www.instagram.com/burbujitasybling" style="text-decoration:none;">
+              <img src="https://burbujitasybling.store/images/icon/instagram.png" alt="Instagram" style="display:block;" />
+            </a>
+          </td>
+        </tr>
+      </table>
 
-    <div style="margin-bottom:0;">
-      <a href="https://burbujitasybling.store/care-tips" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">Care Tips</a>
-      <a href="https://burbujitasybling.store/about-us" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">About Us</a>
-      <a href="https://burbujitasybling.store/policies" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">Policies</a>
-      <a href="https://burbujitasybling.store/contact-us" style="margin:0 8px; color:#9DBDD9; text-decoration:none;">Contact Us</a>
-    </div>
-  </div>`;
+      <!-- Footer Links -->
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="padding:0 8px;"><a href="https://burbujitasybling.store/care-tips" style="color:#9DBDD9; text-decoration:none;">Care Tips</a></td>
+          <td style="padding:0 8px;"><a href="https://burbujitasybling.store/about-us" style="color:#9DBDD9; text-decoration:none;">About Us</a></td>
+          <td style="padding:0 8px;"><a href="https://burbujitasybling.store/policies" style="color:#9DBDD9; text-decoration:none;">Policies</a></td>
+          <td style="padding:0 8px;"><a href="https://burbujitasybling.store/contact-us" style="color:#9DBDD9; text-decoration:none;">Contact Us</a></td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>`;
 
   return `
-  <!doctype html>
-  <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <title>Order Confirmation</title>
-      <style>
-        body { 
-          font-family: "Averia Serif Libre", serif; 
-          background-color:#fadadd; 
-          margin:0; 
-          padding:0; 
-          color:#bb936eff; 
-        }
-        a { color:#bb936eff; text-decoration:none; }
-      </style>
-    </head>
-    <body>
-      <div style="max-width:600px; margin:0 auto; background-color:#fadadd;">
-        ${headerHtml}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Order Confirmation</title>
+  </head>
+  <body style="margin:0; padding:0; background-color:#fadadd; color:#bb936eff; font-family:'Averia Serif Libre', serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td align="center">
+          <!-- Main Container -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0"  style="border-collapse:collapse;">
+            <tr>
+              <td>
 
-        <div style="text-align:center; margin:0 auto; padding:16px 0;">
-          <h1 style="margin:0; font-size:20px;">Order Confirmed</h1>
-          <h2 style="margin:4px 0;">Hi, Friend</h2>
-          <p style="margin:4px 0;">Your order has been received! Thanks for supporting this little business of mine.<br />xoxo, Jocelyn</p>
-        </div>
+                <!-- HEADER -->
+                ${headerHtml}
 
-        ${trackingHtml}
-        ${itemsHtml}
+                <!-- CONFIRMATION MESSAGE -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" >
+                  <tr>
+                    <td align="center">
+                      <h1 style="margin:0; font-size:20px; color:#bb936eff;">Order Confirmed</h1>
+                      <h2 style="margin:4px 0; font-size:18px; color:#bb936eff;">Hi, Amiga</h2>
+                      <p style="margin:4px 0; color:#bb936eff;">
+                        Your order has been received! Thanks for supporting this little business of mine.<br/>xoxo, Jocelyn
+                      </p>
+                    </td>
+                  </tr>
+                </table>
 
-        <div style="display:flex; justify-content:space-between; margin-top:16px; padding:0 16px;">
-          <div>
-            <p>Discount: $${((sessionData.total_details?.amount_discount ?? 0) / 100).toFixed(2)}</p>
-            <p>Subtotal: $${((sessionData.amount_subtotal ?? 0) / 100).toFixed(2)}</p>
-            <p>Shipping: $${((sessionData.shipping_cost?.amount_total ?? 0) / 100).toFixed(2)}</p>
-            <p style="font-weight:bold;">Total: $${((sessionData.amount_total ?? 0) / 100).toFixed(2)}</p>
-          </div>
-          <div style="text-align:right;">
-            <p>${sessionData.customer_details?.name}</p>
-            <p>${sessionData.customer_details?.address?.line1}</p>
-            ${sessionData.customer_details?.address?.line2 ? `<p>${sessionData.customer_details.address.line2}</p>` : ""}
-            <p>${sessionData.customer_details?.address?.city}, ${sessionData.customer_details?.address?.state}</p>
-            <p>${sessionData.customer_details?.address?.postal_code}</p>
-          </div>
-        </div>
+                <!-- TRACKING (if exists) -->
+                ${trackingHtml}
 
-        ${footerHtml}
-      </div>
-    </body>
-  </html>
-  `;
+                <!-- ORDER ITEMS -->
+                <table width="80%" align="center" cellpadding="0" cellspacing="0" border="0" style="border-bottom:1px solid #bb936eff;">
+                  <tr>
+                    <td style="padding:8px 16px;">
+                      ${itemsHtml}
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- TOTALS + ADDRESS -->
+                <table width="100%" cellpadding="0" cellspacing="0" border="0" >
+                  <tr>
+                    <td style="padding:16px;">
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <!-- Totals -->
+                          <td align="left" valign="top" style="font-size:14px; color:#bb936eff;">
+                            <p style="margin:0;">Discount: ${formatAmount(sessionData.total_details?.amount_discount ?? 0)}</p>
+                            <p style="margin:0;">Subtotal: ${formatAmount(sessionData.amount_subtotal ?? 0)}</p>
+                            <p style="margin:0;">Shipping: ${formatAmount(sessionData.shipping_cost?.amount_total ?? 0)}</p>
+                            <p style="margin:0; font-weight:bold;">Total: ${formatAmount(sessionData.amount_total ?? 0)}</p>
+                          </td>
+
+                          <!-- Customer Info -->
+                          <td align="right" valign="top" style="font-size:14px; color:#bb936eff;">
+                            <p style="margin:0;">${sessionData.customer_details?.name}</p>
+                            <p style="margin:0;">${sessionData.customer_details?.address?.line1}</p>
+                            ${sessionData.customer_details?.address?.line2 ? `<p style="margin:0;">${sessionData.customer_details.address.line2}</p>` : ""}
+                            <p style="margin:0;">${sessionData.customer_details?.address?.city}, ${sessionData.customer_details?.address?.state}</p>
+                            <p style="margin:0;">${sessionData.customer_details?.address?.postal_code}</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- FOOTER -->
+                ${footerHtml}
+
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
 }
