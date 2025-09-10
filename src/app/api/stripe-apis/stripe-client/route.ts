@@ -46,10 +46,6 @@ export async function POST(req: Request) {
       payment_method_types: ["card"],
       mode: "payment",
       line_items,
-
-      discounts: [
-        { promotion_code: "Welcome15" }, // Pre-applied discount (optional)
-      ],
       allow_promotion_codes: true, // lets customers enter codes at checkout
       automatic_tax: { enabled: true },
       success_url: `${process.env.NEXT_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
