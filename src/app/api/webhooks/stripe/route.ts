@@ -34,7 +34,14 @@ export async function POST(req: NextRequest) {
   const response = NextResponse.json({ received: true });
 
   if (event.type === "checkout.session.completed") {
-    const session = event.data.object as Stripe.Checkout.Session;
+    let session = event.data.object as Stripe.Checkout.Session;
+
+    // Ensure line_items are fetched
+    if (!session.line_items) {
+      session = await stripe.checkout.sessions.retrieve(session.id, {
+        expand: ["line_items.data.price.product"],
+      });
+    }
 
     const lineItems = session.line_items?.data.map((item: any) => {
       const product = item.price.product as Stripe.Product;
@@ -90,7 +97,7 @@ export async function POST(req: NextRequest) {
         from: `Burbujitas & Bling <${process.env.EMAIL_FROM_ORDERS!}>`,
         to: process.env.EMAIL_TO!,
         //to: "delivered@resend.dev",
-        subject: `Your Burbujitas & Bling Order is confirmed!`,
+        subject: `New Order!`,
         html: getOrderEmailHtml(session),
       });
     } catch (err: any) {

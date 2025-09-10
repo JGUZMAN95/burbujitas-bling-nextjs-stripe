@@ -22,16 +22,13 @@ export default async function handleCheckout({
   }
 
   // Map cart items to Stripe items
-  const items = cart.map((item) => {
-    if (!item.stripePriceId) {
-      onStatus?.(`${item.name} is not synced to Stripe`);
-      throw new Error(`${item.name} not synced to Stripe`);
-    }
-    return {
-      stripePriceId: item.stripePriceId,
-      stripeQuantity: item.quantity || 1,
-    };
-  });
+  const items = cart.map((item) => ({
+    stripePriceId: item.stripePriceId,
+    quantity: item.quantity || 1,
+    selectedSize: item.selectedSize ?? "",
+    selectedColor: item.selectedColor ?? "",
+    name: item.name,
+  }));
 
   try {
     const res = await fetch("/api/stripe-apis/stripe-client", {

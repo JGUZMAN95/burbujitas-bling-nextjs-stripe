@@ -17,9 +17,23 @@ export default defineType({
     },
     {name: 'description', title: 'Description', type: 'text'},
     {name: 'price', title: 'Price', type: 'number', validation: (Rule) => Rule.required()},
-    {name: 'length', title: 'Length', type: 'number'},
-    {name: 'size', title: 'Weight', type: 'number'},
-    {name: 'color', title: 'Color', type: 'string'},
+
+    {name: 'dimensions', title: 'Dimensions', type: 'string'},
+    {
+      name: 'size',
+      title: 'Available Sizes',
+      type: 'array',
+      of: [{type: 'number'}],
+      description: 'List all available sizes, e.g., S, M, L, XL',
+    },
+    {name: 'weight', title: 'Weight', type: 'number'},
+    {
+      name: 'color',
+      title: 'Color',
+      type: 'array',
+      of: [{type: 'string'}],
+      description: 'List all available colors, e.g., Red, Blue, Black',
+    },
     {
       name: 'images',
       title: 'Images',

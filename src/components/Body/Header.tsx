@@ -57,8 +57,8 @@ export default function Header() {
   return (
     <header className="relative font-accent">
       {/* Top bar */}
-      <div className="bg-softPink text-center text-sm p-1 font-body text-softBrown">
-        Free Shipping on Domestic Orders $35+
+      <div className="bg-softPink text-center text-bold text-md p-1 font-body text-softBrown border-b border-softBrown/20">
+        Use code WELCOME15 for 15% off
       </div>
 
       {/* Mobile Header */}
@@ -88,7 +88,10 @@ export default function Header() {
         </Link>
 
         {/* Cart Button */}
-        <button className="relative" onClick={() => openCart(true)}>
+        <button
+          className="relative text-lg md:2xl"
+          onClick={() => openCart(true)}
+        >
           <Image
             src="/images/icons/shopping-bag.png"
             alt="Cart"
@@ -98,7 +101,7 @@ export default function Header() {
             className="md:w-60 md:h-60"
           />
           {cartQuantity > 0 && (
-            <span className="absolute -top-2 -right-2 flex items-center justify-center text-md font-bold text-softBrown">
+            <span className="absolute -top-2 -right-2 items-center flex justify-center font-bold text-softBrown">
               {cartQuantity}
             </span>
           )}
@@ -106,7 +109,7 @@ export default function Header() {
       </div>
 
       {/* Desktop Header */}
-      <div className="hidden md:flex flex-col items-center bg-softPink">
+      <div className="hidden md:flex flex-col items-center bg-softPink shadow-sm border-b border-softBrown/20">
         {/* Logo */}
         <Link href="/" className="flex justify-center w-[220px] mb-2">
           <Image
@@ -167,13 +170,17 @@ export default function Header() {
           isCartOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <button
-          className="absolute top-4 left-4 text-lg font-bold"
-          onClick={() => openCart(false)}
-        >
-          ×
-        </button>
-        <div className="overflow-y-auto h-full">
+        <div className="flex justify-between items-center text-md font-bold z-20 p-4">
+          <span>Your Carito</span>
+          <button
+            onClick={() => openCart(false)}
+            className="absolute right-2 w-8 h-8 bg-softPink text-white rounded-full flex items-center justify-center"
+          >
+            ×
+          </button>{" "}
+        </div>
+
+        <div className="h-full">
           <CartSummary />
         </div>
       </div>
@@ -191,16 +198,15 @@ export default function Header() {
         >
           ×
         </button>
-        <nav className="flex flex-col p-6 space-y-4">
-          <div className="flex justify-center items-center mt-6">
-            <Image
-              src="/images/icons/favicon.png"
-              height={50}
-              width={50}
-              alt="logo"
-            />
-          </div>
 
+        <Image
+          src="/images/logos/logo-blue.png"
+          height={200}
+          width={200}
+          alt="logo"
+          className="mx-auto mt-2"
+        />
+        <nav className="flex flex-col px-6 space-y-4">
           {menuNavLinks.map((link) => (
             <Link
               key={link.path}
@@ -212,6 +218,13 @@ export default function Header() {
             </Link>
           ))}
         </nav>
+        <Image
+          src="/images/icons/favicon.png"
+          height={90}
+          width={90}
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 mb-2"
+          alt="faveicon"
+        />
       </div>
     </header>
   );

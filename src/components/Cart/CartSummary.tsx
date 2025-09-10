@@ -1,74 +1,90 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import ImageComponent from "../Body/ImageComponent";
-import ClickableImage from "../Buttons/ClickableImage";
-import Button from "../Buttons/StaticButton";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Button from "../Buttons/StaticButton";
+import ClickableImage from "../Buttons/ClickableImage";
+import ImageComponent from "../Body/ImageComponent";
 import { getCookie, setCookie } from "@/utils/cookies";
-import Link from "next/link";
-import { Product } from "@/types/product-type";
 import handleCheckout from "@/components/Cart/LoadStripe";
-import { logServerError } from "@/lib/log-server-error";
+import { client } from "@/lib/sanity-client";
+import { Product } from "@/types/product-type";
 
-//TODO:
-// Split into components:
-// CartItemRow for individual product row.
-// CartEmptyState for empty cart.
-// CartTotals for subtotal and checkout.
+interface CartItem extends Product {
+  quantity: number;
+  selectedSize: string;
+  selectedColor: string;
+}
+
+interface ProductImageMap {
+  [key: string]: any; // key = `${category}-${slug}`, value = sanity image object
+}
+
+// Fetch images for all cart items in one query
+async function fetchProductImages(
+  cartItems: CartItem[]
+): Promise<ProductImageMap> {
+  if (!cartItems.length) return {};
+
+  const slugs = cartItems.map((i) => i.slug);
+  const categories = cartItems.map((i) => i.category);
+
+  const query = `*[_type == "product" && slug.current in $slugs && category in $categories]{
+    "key": category + "-" + slug.current,
+    "image": images[0]
+  }`;
+
+  const results = await client.fetch(query, { slugs, categories });
+
+  return results.reduce((acc: ProductImageMap, item: any) => {
+    acc[item.key] = item.image;
+    return acc;
+  }, {});
+}
+
 export default function CartSummary() {
-  const [cartItems, setCartItems] = useState<Product[]>([]);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [imageMap, setImageMap] = useState<ProductImageMap>({});
 
-  const getCart = (): Product[] => {
-    const cookieCart = getCookie("cart");
-    const parsed =
-      typeof cookieCart === "string" ? JSON.parse(cookieCart) : cookieCart;
-
-    if (!cookieCart) {
-      console.error("Failed to parse cart cookie:", cookieCart);
-      return [];
-    }
-
-    return parsed;
-  };
-
-  const showStatus = (message: string, duration = 3000) => {
-    setStatusMessage(message);
-    setTimeout(() => setStatusMessage(null), duration);
-  };
-
-  // Sync cart state with cookie on mount and when cookie changes.
+  // Sync with cookies
   useEffect(() => {
-    const handler = () => setCartItems(getCart());
-    window.addEventListener("cart-updated", handler, { passive: true });
-    setCartItems(getCart());
+    const handler = async () => {
+      const cookieCart = getCookie("cart");
+      if (Array.isArray(cookieCart)) {
+        setCartItems(cookieCart);
+        const imgs = await fetchProductImages(cookieCart);
+        setImageMap(imgs);
+      } else {
+        setCartItems([]);
+        setImageMap({});
+      }
+    };
+    window.addEventListener("cart-updated", handler);
+    handler();
     return () => window.removeEventListener("cart-updated", handler);
   }, []);
 
-  // Update item quantity in cart.
   const updateQuantity = (_id: string, delta: number) => {
     const newCart = cartItems
       .map((item) =>
         item._id === _id
-          ? { ...item, quantity: (item.quantity || 1) + delta }
+          ? { ...item, quantity: Math.max((item.quantity || 1) + delta, 0) }
           : item
       )
-      .filter((item) => item.quantity! > 0);
+      .filter((item) => item.quantity > 0);
 
     setCartItems(newCart);
-    setCookie("cart", newCart, 3);
+    setCookie("cart", newCart, 7);
     window.dispatchEvent(new Event("cart-updated"));
   };
 
   const removeItem = (_id: string) => {
     const newCart = cartItems.filter((item) => item._id !== _id);
     setCartItems(newCart);
-    setCookie("cart", newCart, 3);
+    setCookie("cart", newCart, 7);
     window.dispatchEvent(new Event("cart-updated"));
   };
 
-  // Calculate subtotal.
   const subtotal = useMemo(
     () =>
       cartItems.reduce(
@@ -80,118 +96,131 @@ export default function CartSummary() {
 
   if (!cartItems.length)
     return (
-      <div className="text-center place-items-center gap-4 py-10 p-2">
+      <div className="text-center place-items-center py-20 p-4">
         <Image
           src="/images/icons/shopping-bag.png"
-          alt="Burbujitas & Bling"
-          width={100}
-          height={100}
+          alt="empty cart"
+          width={75}
+          height={75}
         />
         <p>
-          Opsies... <br />
-          Your cart is empty
+          Oopsies
+          <br />
+          Your cart is empty...
         </p>
-
-        <Link
-          href={`/`}
-          /* Call a close function instead. This avoids relying on global events.*/
+        <Button
           onClick={() => window.dispatchEvent(new Event("close-cart"))}
+          className="bg-softPink/90 mt-5"
         >
-          <Button className="w-full bg-softBlue/60">Shop Till You Drop</Button>
-        </Link>
+          Shop Till You Drop
+        </Button>
       </div>
     );
 
   return (
-    <div className="justify-center items-center min-h-full py-7">
-      <div className="font-body justify-center max-w-full w-full mx-auto py-5 px-4">
-        <h1 className="text-base uppercase pb-4">Your Carito</h1>
-
+    <div className="relative flex flex-col h-screen">
+      {/* Scrollable cart items */}
+      <div className="flex-1 overflow-y-auto font-body max-w-full w-full mx-auto px-4 pb-14">
         <ul>
-          {cartItems.map((item) => (
-            <li>
-              <div key={item._id} className=" border-softBrown/10 gap-2 pb-4">
-                <div className="flex justify-between items-start mb-4 border-b border-softBrown/20">
-                  <p className="font-bold whitespace-nowrap">
-                    {item.name} | ${Number(item.price).toFixed(2)}
-                  </p>
-                  {/* Trash icon */}
-                  <button
-                    className="mb-2"
-                    aria-label="remove"
-                    onClick={() => removeItem(item._id)}
-                  >
-                    <Image
-                      src="/images/icons/trash-bin.png"
-                      alt="remove"
-                      width={24}
-                      height={24}
-                      priority
-                    />
-                  </button>
-                </div>
+          {cartItems.map((item) => {
+            const key = `${item.category}-${item.slug}`;
+            const image = imageMap[key];
 
-                {/* Product details + quantity + price */}
-                <div className="justify-between items-center h-full flex gap-4">
-                  <div className="w-24 h-24 relative aspect-square">
-                    <ClickableImage
-                      productType={item.category}
-                      productSlug={item.slug}
+            return (
+              <li key={item._id}>
+                <div className="border-softBrown/10 gap-2 pb-4">
+                  <div className="flex justify-between items-start mb-4 border-b border-softBrown/20">
+                    <p className="font-bold whitespace-nowrap text-base">
+                      {item.name} | ${Number(item.price).toFixed(2)}
+                    </p>
+                    <button
+                      className="mb-2"
+                      aria-label="remove"
+                      onClick={() => removeItem(item._id)}
                     >
-                      <ImageComponent image={item.images[0]} />
-                    </ClickableImage>
+                      <Image
+                        src="/images/icons/trash-bin.png"
+                        alt="remove"
+                        width={24}
+                        height={24}
+                        priority
+                      />
+                    </button>
                   </div>
-                  <div
-                    className={`flex h-[2rem] px-3 gap-5 justify-center place-items-start items-center transition-fade-in duration-500 ${
-                      item.quantity === 1 ? "bg-softCoral/20" : "bg-softPink/60"
-                    }`}
-                  >
-                    <button
-                      aria-label={`Decrease quantity of ${item.name}`}
-                      onClick={() => updateQuantity(item._id, -1)}
+
+                  <div className="justify-between items-start h-full text-sm flex gap-2">
+                    <div className="md:w-20 w-13 h-13 relative aspect-square">
+                      <ClickableImage
+                        productType={item.category}
+                        productSlug={item.slug}
+                      >
+                        {image ? (
+                          <ImageComponent image={image} />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-softWhite/40">
+                            <span className="text-xs text-softBrown">
+                              Loading...
+                            </span>
+                          </div>
+                        )}
+                      </ClickableImage>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {item.selectedSize && (
+                        <span>Length: {item.selectedSize}"</span>
+                      )}
+                      {item.selectedColor && (
+                        <span>Color: {item.selectedColor}</span>
+                      )}
+                    </div>
+
+                    <div
+                      className={`flex h-[2rem] px-3 gap-3 items-center transition-fade-in duration-500 ${
+                        item.quantity === 1
+                          ? "bg-softCoral/20"
+                          : "bg-softPink/60"
+                      }`}
                     >
-                      <span className="text-lg font-bold">−</span>
-                    </button>
-                    {item.quantity}
-                    <button
-                      aria-label={`Increase quantity of ${item.name}`}
-                      onClick={() => updateQuantity(item._id, 1)}
-                    >
-                      <span className="text-lg font-bold">+</span>
-                    </button>
+                      <button
+                        aria-label={`Decrease quantity of ${item.name}`}
+                        onClick={() => updateQuantity(item._id, -1)}
+                      >
+                        <span className="text-lg font-bold">−</span>
+                      </button>
+                      {item.quantity}
+                      <button
+                        aria-label={`Increase quantity of ${item.name}`}
+                        onClick={() => updateQuantity(item._id, 1)}
+                      >
+                        <span className="text-lg font-bold">+</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
+      </div>
 
-        {/* Totals + Checkout */}
-        <div className="grid mt-4">
-          <div className="grid grid-cols-2 font-bold text-base font-accent">
-            <p className="text-left">Subtotal:</p>
-            <p className="text-right">${subtotal.toFixed(2)}</p>
-          </div>
+      {/* Checkout bar pinned at bottom */}
+      <div className="sticky bottom-0 w-full bg-softWhite/60 z-20 backdrop-blur-sm p-4 border-t border-softBrown/20">
+        <div className="grid grid-cols-2 font-bold text-base font-accent">
+          <p className="text-left">Subtotal:</p>
+          <p className="text-right">${subtotal.toFixed(2)}</p>
         </div>
 
-        {/* Checkout button */}
-        <div className="grid w-full mt-2">
+        <div className="w-full mt-2">
           <Button
-            onClick={() =>
-              handleCheckout({ cart: cartItems, onStatus: showStatus })
-            }
+            className="bg-softYellow"
+            onClick={() => handleCheckout({ cart: cartItems })}
           >
             Next Step
-          </Button>{" "}
+          </Button>
           <p className="text-center text-softBrown text-xs mt-1">
             Taxes and shipping calculated at checkout
           </p>
-          {/* Status message display */}
-          {statusMessage && (
-            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-softCoral text-white px-4 py-2 rounded shadow-md">
-              {statusMessage}
-            </div>
-          )}
         </div>
       </div>
     </div>

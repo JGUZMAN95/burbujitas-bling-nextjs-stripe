@@ -24,8 +24,10 @@ export function getCookie<T = any>(name: string): T | null {
   if (!cookie) return null;
 
   try {
-    return JSON.parse(decodeURIComponent(cookie.split("=")[1]));
+    const value = decodeURIComponent(cookie.split("=")[1]);
+    return JSON.parse(value);
   } catch {
+    console.error("Failed to parse cookie:", name, cookie);
     return null;
   }
 }

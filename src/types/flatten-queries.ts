@@ -7,7 +7,6 @@ export const allProductsQuery = `
     price,
     images,
     category,
-    color,
   }
 `;
 
@@ -35,6 +34,9 @@ export const productBySlugQuery = `
     color,
     stripePriceId,
     stripeProductId,
+    weight,
+    size,
+    dimension,
   }`;
 
 export const ordersByOrderIDQuery = `
