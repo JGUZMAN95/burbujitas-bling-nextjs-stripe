@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
         to: session.customer_details?.email!,
         //to: "delivered@resend.dev",
         subject: `Your Burbujitas & Bling Order is confirmed!`,
-        html: getOrderEmailHtml(session),
+        html: getOrderEmailHtml({ sessionData: session }),
       });
 
       await resend.emails.send({
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
         to: process.env.EMAIL_TO!,
         //to: "delivered@resend.dev",
         subject: `New Order!`,
-        html: getOrderEmailHtml(session),
+        html: getOrderEmailHtml({ sessionData: session }),
       });
     } catch (err: any) {
       await logServerError({

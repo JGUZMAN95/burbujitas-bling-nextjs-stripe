@@ -117,7 +117,11 @@ export default function ContactUs() {
 
         {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 mt-4">
-          <Button className="w-full" disabled={loading} aria-busy={loading}>
+          <Button
+            className="bg-softYellow w-full"
+            disabled={loading}
+            aria-busy={loading}
+          >
             {loading ? "Sending..." : "Send"}
           </Button>
 

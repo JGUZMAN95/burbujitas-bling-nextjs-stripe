@@ -8,9 +8,8 @@ export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [trackingData, setTrackingData] = useState({
-    orderId: "",
+    CHECKOUT_SESSION_ID: "",
     trackingUrl: "",
-    estimatedDelivery: "",
   });
 
   const [message, setMessage] = useState<{
@@ -74,11 +73,11 @@ export default function Admin() {
       } else {
         setMessage({
           type: "error",
-          text: "❌ Sync failed: " + (data.error || ""),
+          text: `❌ Sync failed: ${data.error || ""}`,
         });
       }
     } catch (err) {
-      setMessage({ type: "error", text: "❌ Sync failed: " + err });
+      setMessage({ type: "error", text: `❌ Sync failed: ${err}` });
     } finally {
       setLoadingSync(false);
     }
@@ -86,36 +85,46 @@ export default function Admin() {
 
   // Update tracking info
   const handleUpdateTracking = async () => {
-    if (!trackingData.orderId || !trackingData.trackingUrl) {
+    const { CHECKOUT_SESSION_ID, trackingUrl } = trackingData;
+
+    if (!CHECKOUT_SESSION_ID || !trackingUrl) {
       setMessage({
         type: "error",
-        text: "Order ID and Tracking URL are required",
+        text: "Checkout Session ID and Tracking URL are required",
       });
       return;
     }
+
+    if (!CHECKOUT_SESSION_ID.startsWith("cs_")) {
+      setMessage({
+        type: "error",
+        text: "Please enter a valid Stripe Checkout Session ID",
+      });
+      return;
+    }
+
     setLoadingTracking(true);
     setMessage({ type: "success", text: "Updating tracking..." });
+
     try {
       const res = await fetch("/api/admin/update-tracking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(trackingData),
+        body: JSON.stringify({ CHECKOUT_SESSION_ID, trackingUrl }),
       });
+
       const data = await res.json();
+
       if (res.ok) {
         setMessage({
           type: "success",
-          text: `✅ Tracking updated and email sent for order ${trackingData.orderId}`,
+          text: `✅ Tracking updated and email sent for order ${CHECKOUT_SESSION_ID}`,
         });
-        setTrackingData({
-          orderId: "",
-          trackingUrl: "",
-          estimatedDelivery: "",
-        });
+        setTrackingData({ CHECKOUT_SESSION_ID: "", trackingUrl: "" });
       } else {
         setMessage({
           type: "error",
-          text: "❌ " + (data.error || "Failed to update tracking"),
+          text: `❌ ${data.error || "Failed to update tracking"}`,
         });
       }
     } catch {
@@ -148,7 +157,9 @@ export default function Admin() {
         </form>
         {message && (
           <p
-            className={`mt-2 ${message.type === "error" ? "text-red-500" : "text-green-500"}`}
+            className={`mt-2 ${
+              message.type === "error" ? "text-red-500" : "text-green-500"
+            }`}
           >
             {message.text}
           </p>
@@ -182,10 +193,13 @@ export default function Admin() {
         <h2 className="text-xl font-bold">Update Tracking</h2>
         <input
           type="text"
-          placeholder="Order Number"
-          value={trackingData.orderId}
+          placeholder="Stripe Checkout Session ID (cs_live_...)"
+          value={trackingData.CHECKOUT_SESSION_ID}
           onChange={(e) =>
-            setTrackingData((prev) => ({ ...prev, orderId: e.target.value }))
+            setTrackingData((prev) => ({
+              ...prev,
+              CHECKOUT_SESSION_ID: e.target.value,
+            }))
           }
           className="border p-2 rounded w-full"
         />
@@ -197,18 +211,6 @@ export default function Admin() {
             setTrackingData((prev) => ({
               ...prev,
               trackingUrl: e.target.value,
-            }))
-          }
-          className="border p-2 rounded w-full"
-        />
-        <input
-          type="text"
-          placeholder="Estimated Delivery (optional)"
-          value={trackingData.estimatedDelivery}
-          onChange={(e) =>
-            setTrackingData((prev) => ({
-              ...prev,
-              estimatedDelivery: e.target.value,
             }))
           }
           className="border p-2 rounded w-full"
