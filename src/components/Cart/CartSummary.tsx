@@ -96,7 +96,7 @@ export default function CartSummary() {
 
   if (!cartItems.length)
     return (
-      <div className="text-center place-items-center py-20 p-4">
+      <div className="text-center place-items-center md:py-20 p-4">
         <Image
           src="/images/icons/shopping-bag.png"
           alt="empty cart"
