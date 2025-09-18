@@ -56,8 +56,8 @@ export async function POST(req: Request) {
 
       await resend.emails.send({
         from: `Burbujitas & Bling <${process.env.EMAIL_FROM_ORDERS!}>`,
-        //to: sessionData.customer_details.email!,
-        to: "delivered@resend.dev",
+        to: sessionData.customer_details.email!,
+        //to: "delivered@resend.dev",
         subject: "Your Burbujitas & Bling Order Has Shipped!",
         html: getOrderEmailHtml({
           sessionData: sessionData,
