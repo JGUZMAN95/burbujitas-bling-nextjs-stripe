@@ -15,48 +15,82 @@ export async function POST(req: NextRequest) {
     const products: Product[] =
       await serverSanityClient.fetch(allProductsQuery);
 
-    // Filter products that need syncing
-    const unsyncedProducts = products.filter(
-      (p) => !p.stripePriceId && typeof p.price === "number"
-    );
-
     const synced = await Promise.all(
-      unsyncedProducts.map(async (product) => {
+      products.map(async (product) => {
         try {
-          const imageUrls = product.images?.length
-            ? [urlFor(product.images[0]).url()]
-            : [];
+          // Mark as pending before starting
+          await serverSanityClient
+            .patch(product._id)
+            .set({ syncStatus: "pending", syncError: "" })
+            .commit();
 
-          // Create product on Stripe
-          const stripeProduct = await stripe.products.create({
-            name: product.name,
-            images: imageUrls,
-            description: product.description || undefined,
-            metadata: {
-              slug: product.slug || "",
-              category: product.category || "",
-            },
+          const imageUrl = urlFor(product.images[0]).url();
+
+          // Check if product exists on Stripe by name
+          const existingStripeProducts = await stripe.products.list({
+            limit: 100,
           });
+          let stripeProduct = existingStripeProducts.data.find(
+            (p) => p.name === product.name
+          );
 
-          // Create price on Stripe
-          const stripePrice = await stripe.prices.create({
+          if (!stripeProduct) {
+            // Create Stripe product if missing
+            stripeProduct = await stripe.products.create({
+              name: product.name,
+              images: [imageUrl],
+              description: product.description || undefined,
+              metadata: {
+                slug: product.slug || "",
+                category: product.category || "",
+              },
+            });
+          }
+
+          // Check for existing price matching Sanity price
+          const expectedAmount = Math.round(product.price! * 100);
+          const stripePrices = await stripe.prices.list({
             product: stripeProduct.id,
-            unit_amount: Math.round(product.price! * 100),
-            currency: "usd",
+            limit: 100,
           });
+          let stripePrice = stripePrices.data.find(
+            (p) => p.unit_amount === expectedAmount && p.currency === "usd"
+          );
 
-          // Update Sanity document
+          if (!stripePrice) {
+            // Create new price if it doesn't exist
+            stripePrice = await stripe.prices.create({
+              product: stripeProduct.id,
+              unit_amount: expectedAmount,
+              currency: "usd",
+            });
+          }
+
+          // Update Sanity document on success
           await serverSanityClient
             .patch(product._id)
             .set({
               stripeProductId: stripeProduct.id,
               stripePriceId: stripePrice.id,
+              lastSyncedAt: new Date().toISOString(),
+              syncStatus: "synced",
+              syncError: "",
             })
             .commit();
 
           return { name: product.name, id: product._id };
         } catch (err: any) {
           console.log("ERROR: ", err);
+
+          // Update Sanity on failure
+          await serverSanityClient
+            .patch(product._id)
+            .set({
+              syncStatus: "failed",
+              syncError: err.message,
+              lastSyncedAt: new Date().toISOString(),
+            })
+            .commit();
 
           await logServerError({
             message: err.message,
@@ -78,6 +112,7 @@ export async function POST(req: NextRequest) {
       stack: err.stack,
       endpoint: "POST /api/stripe-apis/sync-products",
     });
+
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
