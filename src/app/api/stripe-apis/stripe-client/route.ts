@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         allowed_countries: ["US"],
       },
       shipping_options: [
-        { shipping_rate: "shr_1S5uptJEgu7wsuYn9XBfhbyK" },
+        //{ shipping_rate: "shr_1S5uptJEgu7wsuYn9XBfhbyK" }, //free shipping
         { shipping_rate: "shr_1S48JpJEgu7wsuYnhlL9SG66" },
       ],
       metadata,

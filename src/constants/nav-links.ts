@@ -12,6 +12,8 @@ export const menuNavLinks = [
   { name: "Beauty", path: "/product/beauty" },
   { name: "Hand Chains", path: "/product/handchains" },
   { name: "Stickers", path: "/product/stickers" },
+  { name: "Gift Cards", path: "/product/giftcard" },
+  { name: "Custom Order", path: "/product/custom" },
 ];
 
 export const footerNavLinks = [

@@ -7,6 +7,8 @@ export const allProductsQuery = `
     price,
     images,
     category,
+    stripePriceId,
+    stripeProductId
   }
 `;
 

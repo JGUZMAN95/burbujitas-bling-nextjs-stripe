@@ -58,6 +58,8 @@ export default defineType({
           {title: 'Beauty', value: 'beauty'},
           {title: 'Hand Chain', value: 'handchains'},
           {title: 'Sticker', value: 'stickers'},
+          {title: 'Gift Cards', value: 'giftcard'},
+          {title: 'Custom Order', value: 'custom'},
         ],
       },
       validation: (Rule) => Rule.required(),
