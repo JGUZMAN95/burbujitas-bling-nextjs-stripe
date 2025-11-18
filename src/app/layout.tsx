@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className="bg-softPink md:text-md text:sm text-softBrown">
+    <html className="bg-softWhite md:text-md text:sm text-softBrown">
       <body className="flex flex-col min-h-screen">
         <Header />
 

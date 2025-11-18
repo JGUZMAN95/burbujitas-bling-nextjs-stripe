@@ -4,7 +4,7 @@ import { getOrderEmailHtml } from "@/utils/orderEmailTemplate";
 import { logServerError } from "@/lib/log-server-error";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_LIVE_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",
 });
 

@@ -57,12 +57,12 @@ export default function Header() {
   return (
     <header className="relative font-accent">
       {/* Top bar */}
-      <div className="bg-softPink text-center text-bold text-md p-1 font-body text-softBrown border-b border-softBrown/20">
-        Use code WELCOME15 for 15% off
+      <div className="bg-White text-center text-bold text-md p-1 font-body text-softBrown">
+        Use 'HOLIDAYS' for Free Shipping $25+
       </div>
 
       {/* Mobile Header */}
-      <div className="flex justify-between items-center px-4 md:hidden bg-softPink border-b border-softBrown/20 py-2">
+      <div className="flex justify-between items-center px-4 md:hidden bg-White py-2">
         {/* Hamburger */}
         <button
           aria-label="Toggle menu"
@@ -72,19 +72,29 @@ export default function Header() {
           onClick={() => openMenu((o) => !o)}
         >
           <div className="tham-box">
-            <div className="tham-inner bg-green" />
+            <div className="tham-inner bg-softPink" />
           </div>
         </button>
 
         {/* Logo */}
-        <Link href="/" className="flex justify-center">
-          <Image
-            src="/images/logos/logo-pink.png"
+        <Link href="/" className="flex justify-center w-full">
+          {/*<Image
+            src="/images/body/winter.svg"
             alt="Burbujitas & Bling"
-            width={180}
-            height={180}
+            width={500}
+            height={500}
             priority={true}
-          />
+          />*/}
+          <video
+            src="/images/body/winter.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            Your browser does not support the video tag.
+          </video>
         </Link>
 
         {/* Cart Button */}
@@ -109,21 +119,26 @@ export default function Header() {
       </div>
 
       {/* Desktop Header */}
-      <div className="hidden md:flex flex-col items-center bg-softPink shadow-sm border-b border-softBrown/20">
+      <div className="hidden md:flex flex-col items-center bg-White shadow-sm">
         {/* Logo */}
-        <Link href="/" className="flex justify-center w-[220px] mb-2">
-          <Image
-            src="/images/logos/logo-pink.png"
-            alt="Burbujitas & Bling"
+
+        <Link href="/" className="flex justify-center mb-2">
+          <video
             width={scrolled ? 176 : 220}
-            height={90}
-            className="w-full h-auto"
-            priority={true}
-          />
+            className="w-full"
+            src="/images/body/winter.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            Your browser does not support the video tag.
+          </video>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="flex items-center space-x-2 mb-2 px-4 w-full max-w-2xl justify-between">
+        <nav className="flex items-center justify-between whitespace-nowrap mb-2 w-full max-w-5xl px-4">
           {menuNavLinks.map((link) => (
             <Link
               key={link.path}
@@ -135,7 +150,7 @@ export default function Header() {
           ))}
 
           {/* Cart */}
-          <button className="relative mb-2" onClick={() => openCart(true)}>
+          <button className="flex relative mb-2" onClick={() => openCart(true)}>
             <Image
               src="/images/icons/shopping-bag.png"
               alt="Cart"

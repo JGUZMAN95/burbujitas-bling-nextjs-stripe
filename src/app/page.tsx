@@ -23,13 +23,6 @@ export default async function HomePage() {
 
   return (
     <main className="grid font-body text-md text-darkBrown place-items-center">
-      <Image
-        src="/images/body/sale.png"
-        width={800}
-        height={800}
-        alt="sale"
-        className="w-full"
-      />
       {ProductGrid(products)}
       {/*Todo: Add sections for Featured Products and Best Sellers*/}
     </main>

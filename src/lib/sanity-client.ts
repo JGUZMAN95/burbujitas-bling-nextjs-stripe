@@ -10,7 +10,7 @@ export const serverSanityClient = createClient({
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
   useCdn: false,
-  token: process.env.SANITY_SECRET_WRITE!, // server only
+  token: process.env.SANITY_WRITE_TOKEN!, // server only
 });
 
 // ------------------
